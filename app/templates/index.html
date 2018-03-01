@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <style>
+        .left_margin {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <nav>
+        <div class="nav-wrapper left_margin">
+            <a href="#" class="brand-logo">Face Finder</a>
+        </div>
+    </nav>
+    <form class="left_margin" action="/upload" method='POST' enctype='multipart/form-data'>
+        <div class="file-field input-field">
+            <div class="btn">
+                <span>Unknown Image</span>
+                <input type="file" name="file">
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate"
+                       placeholder="Only pngs and jpgs">
+            </div>
+            <input type="submit" class="btn">
+        </div>
+    </form>
+    {% if labels %}
+    <br>
+    <br>
+    <h4 class="left_margin">Matched Images</h4>
+    {% for label in labels %}
+    <img class="col s2 left_margin" src="static/img/known/{{label}}.jpg" height="200" width="200">
+    <p class="left_margin">{{label}}</p>
+    {% endfor %}
+    {% endif %}
+</div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+flask
+numpy
+dlib
+face_recognition
