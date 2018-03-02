@@ -11,9 +11,10 @@ import subprocess as s
 def home(filename):
     if request.method == 'GET':
         if filename is not None:
-            labels = compute(filename)
+            labels,distance = compute(filename)
             print(labels)
-            return render_template('index.html', labels=labels)
+            print(distance)
+            return render_template('index.html', labels=labels, distance = distance)
         else:
             return render_template('index.html')
 
@@ -26,7 +27,6 @@ def upload():
             flash('No file part')
             return redirect(request.url)
         file = request.files['file']
-
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
@@ -35,7 +35,8 @@ def upload():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('home', filename=filename))
-
+    else:
+        return redirect(url_for('home'))
 
 @app.route('/clear', methods=['GET', 'POST'])
 def clear_encodings():
