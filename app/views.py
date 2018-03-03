@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, abort, flash, session, g, send_from_directory
+from flask import render_template, request, redirect, url_for, flash
 import os
 from werkzeug.utils import secure_filename
 from app import *
@@ -11,10 +11,10 @@ import subprocess as s
 def home(filename):
     if request.method == 'GET':
         if filename is not None:
-            labels,distance = compute(filename)
+            labels, distance = compute(filename)
             print(labels)
             print(distance)
-            return render_template('index.html', labels=labels, distance = distance)
+            return render_template('index.html', labels=labels, distance=distance)
         else:
             return render_template('index.html')
 
@@ -38,13 +38,15 @@ def upload():
     else:
         return redirect(url_for('home'))
 
+
 @app.route('/clear', methods=['GET', 'POST'])
 def clear_encodings():
     s.call(['rm', 'encodings.npy'])
     s.call(['rm', 'labels.npy'])
     return redirect(url_for('home'))
 
-@app.route('/populate',methods=['GET','POST'])
+
+@app.route('/populate', methods=['GET', 'POST'])
 def populate_encodings():
     pre_process()
     return redirect(url_for('home'))

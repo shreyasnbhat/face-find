@@ -49,10 +49,10 @@ def compute(filepath):
         return
     face_distances=[]
     face_distances = face_recognition.face_distance(known_encodings, b)
-    print face_distances
+    print(face_distances)
     res_labels = []
     res_dist = []
-	
+
     for i in range(len(face_distances)):
         if face_distances[i]<0.6:
     		res_labels.append(known_labels[i])
@@ -63,4 +63,3 @@ def compute(filepath):
 
 if __name__ == '__main__':
     a,b = compute("henry2.jpg")
-
