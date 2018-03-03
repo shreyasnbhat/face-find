@@ -17,7 +17,7 @@ def pre_process():
         known_encodings = np.load('encodings.npy')
         known_labels = np.load('labels.npy')
         print("File was found")
-    #except FileNotFoundError:
+    # except FileNotFoundError:
     except (OSError, IOError):
         print("File not found")
         errors = 0
@@ -47,19 +47,20 @@ def compute(filepath):
         b = get_encoding(BASE + "unknown/" + filepath)
     except (OSError, IOError):
         return
-    face_distances=[]
+    face_distances = []
     face_distances = face_recognition.face_distance(known_encodings, b)
     print(face_distances)
     res_labels = []
     res_dist = []
 
     for i in range(len(face_distances)):
-        if face_distances[i]<0.6:
-    		res_labels.append(known_labels[i])
-    		res_dist.append(str(face_distances[i]))
-    final_labels=[label for _,label in sorted(zip(res_dist,res_labels))]
-    final_dist=sorted(res_dist)
-    return final_labels,final_dist
+        if face_distances[i] < 0.6:
+            res_labels.append(known_labels[i])
+            res_dist.append(str(face_distances[i]))
+    final_labels = [label for _, label in sorted(zip(res_dist, res_labels))]
+    final_dist = sorted(res_dist)
+    return final_labels, final_dist
+
 
 if __name__ == '__main__':
-    a,b = compute("henry2.jpg")
+    a, b = compute("henry2.jpg")

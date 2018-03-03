@@ -14,7 +14,7 @@ An Android App to help find missing people
 ### Setup
 - Install virtualenv `pip3 install virtualenv`
 - Create a new python3 environment by `virtualenv -p python3 face-find` 
-- Activate the python3 virtualenv with source `face-find/bin/activate`
+- Activate the python3 virtualenv with `source face-find/bin/activate`
 - Install requirements with `pip3 -r requirements.txt`
 - Start flask server locally by  `python3 run.py d 5000`
 

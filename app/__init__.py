@@ -4,7 +4,6 @@ from flask import Flask
 UPLOAD_FOLDER = '/home/shreyas/Code/face-find/app/static/img/unknown'
 ALLOWED_EXTENSIONS = {'jpg', 'png'}
 
-
 # Flask App initialization
 app = Flask(__name__)
 app.secret_key = 'secret_key'
