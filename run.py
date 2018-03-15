@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from app import app
+from api import app
 import sys
 
 if __name__ == '__main__':

@@ -3,3 +3,5 @@ numpy
 dlib
 face_recognition
 pandas
+sqlalchemy
+bcrypt
