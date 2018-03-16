@@ -13,14 +13,19 @@ from werkzeug.utils import secure_filename
 def add_user():
     db_session = DBSession()
 
-    username = request.form['username']
+    name = request.form['username']
     password = request.form['password'].encode('utf-8')
-    user_id = str(random.randint(0,100000))
+    user_id = request.form['user-id']
     age = request.form['age']
     gender = request.form['gender']
 
+    print(db_session.query(User).filter_by(id=user_id).first())
+
+    if (db_session.query(User).filter_by(id=user_id).first()):
+        return json.dumps("{'message':'failed: Duplicate User ID'}")
+
     db_session.add(User(id=user_id,
-                        name=username,
+                        name=name,
                         gender=gender,
                         age=age))
 
@@ -31,4 +36,41 @@ def add_user():
                              salt=salt,
                              isAdmin=True))
     db_session.commit()
+    db_session.close()
     return json.dumps("{'message':'success'}")
+
+@app.route('/api/users/delete', methods=['POST'])
+def rem_user():
+    db_session = DBSession()
+
+    user_id = request.form['user-id']
+    password = request.form['password'].encode('utf-8')
+
+    user = db_session.query(User).filter_by(id=user_id).first()
+    user_credentials = db_session.query(AuthStore).filter_by(id=user_id).first()
+
+    if(bcrypt.checkpw(password,user_credentials.phash)):
+        db_session.delete(user_credentials)
+        db_session.delete(user)
+        db_session.commit()
+
+    db_session.close()
+    return json.dumps("{'message':'success'}")
+
+
+@app.route('/api/authenticate', methods=['POST'])
+def authenticate():
+    db_session = DBSession()
+
+    user_id = request.form['user-id']
+    password = request.form['password'].encode('utf-8')
+
+    user = db_session.query(User).filter_by(id=user_id).first()
+    user_credentials = db_session.query(AuthStore).filter_by(id=user_id).first()
+    db_session.close()
+
+    if(bcrypt.checkpw(password,user_credentials.phash)):
+        return json.dumps("{'message':'success'}")
+
+    return json.dumps("{'message':'failed'}")
+
