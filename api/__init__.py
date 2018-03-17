@@ -20,15 +20,14 @@ Base.metadata.create_all(engine)
 DBSession = sessionmaker(bind=engine)
 
 """
-The login manager contains the code that lets your application and Flask-Login work together, 
+The login manager contains the code that lets your application and Flask-Login work together,
 such as how to load a user from an ID, where to send users when they need to log in etc.
 """
 login_manager = LoginManager(app)
 login_manager.init_app(app)
 
 # Login Manager view definition
-login_manager.login_view = "home"
-
+login_manager.login_view = "authenticate"
 
 @login_manager.user_loader
 def load_user(user_id):
