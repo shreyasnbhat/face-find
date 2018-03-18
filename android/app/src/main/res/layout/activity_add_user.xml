@@ -4,44 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey"
     android:orientation="vertical"
     tools:context="com.example.shreyas.missingpersons.activities.MainActivity">
 
     <EditText
         android:id="@+id/name_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        style="@style/editTextTheme"
+        android:layout_marginTop="8dp"
         android:hint="Name"
         android:inputType="text"
-        android:padding="8dp"
         android:text="" />
 
     <EditText
         android:id="@+id/user_id_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        style="@style/editTextTheme"
+        android:layout_marginTop="4dp"
         android:hint="Username"
         android:inputType="text"
-        android:padding="8dp"
         android:text="" />
 
     <EditText
         android:id="@+id/password_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        style="@style/editTextTheme"
+        android:layout_marginTop="4dp"
         android:hint="Password"
         android:inputType="textPassword"
-        android:padding="8dp"
         android:text="" />
 
     <EditText
         android:id="@+id/age_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        style="@style/editTextTheme"
+        android:layout_marginTop="4dp"
         android:hint="Age"
         android:inputType="number"
         android:padding="8dp"
@@ -49,28 +43,32 @@
 
     <EditText
         android:id="@+id/gender_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        style="@style/editTextTheme"
+        android:layout_marginTop="4dp"
         android:hint="Gender"
         android:inputType="text"
-        android:padding="8dp"
         android:text="" />
 
     <Button
         android:id="@+id/confirm_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:text="Confirm" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/button_background"
+        android:gravity="center"
+        android:text="Confirm"
+        android:textColor="@color/white" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:fontFamily="sans-serif"
         android:padding="8dp"
-        android:text="Response" />
+        android:text="Response"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/result_text"
@@ -78,7 +76,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:padding="8dp"
-        android:text="" />
+        android:text=""
+        android:textColor="@color/white" />
 
 
 </LinearLayout>

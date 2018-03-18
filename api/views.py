@@ -9,6 +9,21 @@ import json
 from werkzeug.utils import secure_filename
 
 
+def check_auth(user_id, password):
+    db_session = DBSession()
+    user = db_session.query(User).filter_by(id=user_id).first()
+    user_credentials = db_session.query(AuthStore).filter_by(id=user_id).first()
+    db_session.close()
+    if user:
+        if bcrypt.checkpw(password, user_credentials.phash.encode('utf-8')):
+            login_user(user_credentials)
+            return "success"
+        else:
+            return "failed"
+    else:
+        return "no such user exists"
+
+
 @app.route('/api/users/add', methods=['POST'])
 def add_user():
     db_session = DBSession()
@@ -62,22 +77,9 @@ def rem_user():
 
 @app.route('/api/authenticate', methods=['POST'])
 def authenticate():
-    db_session = DBSession()
-
     user_id = request.form['user-id']
     password = request.form['password'].encode('utf-8')
-
-    user = db_session.query(User).filter_by(id=user_id).first()
-    user_credentials = db_session.query(AuthStore).filter_by(id=user_id).first()
-    db_session.close()
-    if user:
-        if bcrypt.checkpw(password, user_credentials.phash.encode('utf-8')):
-            login_user(user_credentials)
-            return "success"
-        else:
-            return "failed"
-    else:
-        return "no such user exists"
+    return check_auth(user_id, password)
 
 
 @login_required
@@ -86,10 +88,9 @@ def test():
     db_session = DBSession()
 
     user_id = request.form['user-id']
-    print(type(user_id))
-    user = db_session.query(User).filter_by(id=user_id).first()
-    print(user.__dict__)
-    if user:
+    password = request.form['password'].encode('utf-8')
+    if check_auth(user_id, password) is 'success':
+        user = db_session.query(User).filter_by(id=user_id).first()
         return str(user.age)
     else:
-        return "failed"
+        return "not authenticated"

@@ -34,7 +34,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         testButton = findViewById(R.id.test);
         resultText = findViewById(R.id.result_text);
-
         testButton.setOnClickListener(this);
 
         queue = Volley.newRequestQueue(this);
@@ -56,8 +55,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         }, new ResponseErrorListener()) {
                     protected Map<String, String> getParams() {
                         Map<String, String> data = new HashMap<>();
-                        String userid = sharedpreferences.getString("user-id", "Default");
-                        data.put("user-id", userid);
+                        String userId = sharedpreferences.getString("user-id", "Default");
+                        String password = sharedpreferences.getString("password", "Default");
+                        data.put("user-id", userId);
+                        data.put("password",password);
                         return data;
                     }
                 };
