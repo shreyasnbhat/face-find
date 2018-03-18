@@ -1,0 +1,9 @@
+.idea/
+__pycache__/
+android/.idea
+*/*.pyc
+*.pyc
+face/*
+*.npy
+*.db
+app/static/*

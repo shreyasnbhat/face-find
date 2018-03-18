@@ -19,14 +19,13 @@ def add_user():
     age = request.form['age']
     gender = request.form['gender']
 
-    try:
-        if (db_session.query(User).filter_by(id=user_id).first()):
-            return "duplicate userid"
-    except:
+    if db_session.query(User).filter_by(id=user_id).first():
+        return "duplicate user id"
+    else:
         db_session.add(User(id=user_id,
-                        name=name,
-                        gender=gender,
-                        age=age))
+                            name=name,
+                            gender=gender,
+                            age=age))
 
         salt = bcrypt.gensalt()
         phash = bcrypt.hashpw(password, salt)
@@ -37,7 +36,7 @@ def add_user():
         db_session.commit()
         db_session.close()
         return "success"
-    return "wierd"
+
 
 @app.route('/api/users/delete', methods=['POST'])
 def rem_user():
@@ -46,20 +45,19 @@ def rem_user():
     user_id = request.form['user-id']
     password = request.form['password'].encode('utf-8')
 
-    try:
-        user = db_session.query(User).filter_by(id=user_id).first()
-        user_credentials = db_session.query(AuthStore).filter_by(id=user_id).first()
+    user = db_session.query(User).filter_by(id=user_id).first()
+    user_credentials = db_session.query(AuthStore).filter_by(id=user_id).first()
 
-        if(bcrypt.checkpw(password,user_credentials.phash)):
+    if user:
+        if bcrypt.checkpw(password, user_credentials.phash):
             db_session.delete(user_credentials)
             db_session.delete(user)
             db_session.commit()
-    except:
+            db_session.close()
+            return "success"
+    else:
         db_session.close()
         return "user doesn't exist"
-    finally:
-        db_session.close()
-        return "success"
 
 
 @app.route('/api/authenticate', methods=['POST'])
@@ -69,17 +67,29 @@ def authenticate():
     user_id = request.form['user-id']
     password = request.form['password'].encode('utf-8')
 
-    try:
-        user = db_session.query(User).filter_by(id=user_id).first()
-        user_credentials = db_session.query(AuthStore).filter_by(id=user_id).first()
-        db_session.close()
-
-        session_obj['user-id'] = user_id
-
-        if(bcrypt.checkpw(password,user_credentials.phash)):
+    user = db_session.query(User).filter_by(id=user_id).first()
+    user_credentials = db_session.query(AuthStore).filter_by(id=user_id).first()
+    db_session.close()
+    if user:
+        if bcrypt.checkpw(password, user_credentials.phash.encode('utf-8')):
             login_user(user_credentials)
             return "success"
         else:
             return "failed"
-    except:
+    else:
         return "no such user exists"
+
+
+@login_required
+@app.route('/api/test', methods=['POST'])
+def test():
+    db_session = DBSession()
+
+    user_id = request.form['user-id']
+    print(type(user_id))
+    user = db_session.query(User).filter_by(id=user_id).first()
+    print(user.__dict__)
+    if user:
+        return str(user.age)
+    else:
+        return "failed"

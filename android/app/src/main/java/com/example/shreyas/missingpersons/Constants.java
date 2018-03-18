@@ -9,4 +9,5 @@ public class Constants {
     public static String ADD_USER = BASE + "users/add";
     public static String DELETE_USER = BASE + "users/delete";
     public static String AUTHENTICATE = BASE + "authenticate";
+    public static String TEST = BASE + "test";
 }
