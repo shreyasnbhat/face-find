@@ -32,7 +32,7 @@
         android:text="" />
 
     <Button
-        android:id="@+id/uploadButton"
+        android:id="@+id/upload_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -40,7 +40,7 @@
         android:text="Upload Image" />
 
     <ImageView
-        android:id="@+id/TargetImage"
+        android:id="@+id/target_image"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_margin="8dp"

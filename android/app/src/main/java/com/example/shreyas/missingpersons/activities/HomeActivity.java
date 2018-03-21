@@ -42,10 +42,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        requestAllPermissions();
+
         testButton = findViewById(R.id.test);
         resultText = findViewById(R.id.result_text);
-        uploadButton = (Button) findViewById(R.id.uploadButton);
-        targetImage = (ImageView) findViewById(R.id.TargetImage);
+        uploadButton = findViewById(R.id.upload_button);
+        targetImage = findViewById(R.id.target_image);
+
         testButton.setOnClickListener(this);
         uploadButton.setOnClickListener(this);
 
@@ -81,20 +84,27 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 };
                 queue.add(stringRequest);
                 break;
-            case R.id.uploadButton:
-                requestAllPermissions();
+            case R.id.upload_button:
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                Uri targetUri = intent.getData();
-                Bitmap bitmap;
-                try {
-                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
-                    targetImage.setImageBitmap(bitmap);
-                    targetImage.setVisibility(View.VISIBLE);
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                startActivityForResult(intent, 0);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK){
+            Uri targetUri = data.getData();
+            Bitmap bitmap;
+            try {
+                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
+                targetImage.setImageBitmap(bitmap);
+                targetImage.setVisibility(View.VISIBLE);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
