@@ -7,6 +7,7 @@ from api import *
 import random
 import json
 from werkzeug.utils import secure_filename
+import base64
 
 
 def check_auth(user_id, password):
@@ -94,3 +95,25 @@ def test():
         return str(user.age)
     else:
         return "not authenticated"
+
+
+@login_required
+@app.route('/api/users/upload', methods=['POST'])
+def upload():
+    db_session = DBSession()
+
+    user_id = request.form['user-id']
+    password = request.form['password'].encode('utf-8')
+
+    db_session.close()
+
+    if check_auth(user_id, password) is 'success':
+        image = base64.b64decode(request.form['image'])
+        filename = user_id + '_' + str(time.time()) + '.jpg'
+        print("Filename is ", filename)
+        path = UPLOAD_FOLDER + '/' + filename
+        with open(path, 'wb') as f:
+            f.write(image)
+            return "Uploaded"
+
+    return "Failed"

@@ -7,3 +7,4 @@ face/*
 *.npy
 *.db
 app/static/*
+data/*

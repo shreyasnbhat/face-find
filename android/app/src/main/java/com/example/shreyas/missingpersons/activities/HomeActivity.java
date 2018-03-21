@@ -9,10 +9,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,6 +25,7 @@ import com.example.shreyas.missingpersons.Constants;
 import com.example.shreyas.missingpersons.R;
 import com.example.shreyas.missingpersons.response.ResponseErrorListener;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +37,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private SharedPreferences sharedpreferences;
     private RequestQueue queue;
     private ImageView targetImage;
-    private Button uploadButton;
+    private Button addImageButton;
+    private Button postImageButton;
+    private Bitmap imageBitmap;
     private String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Override
@@ -46,11 +51,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         testButton = findViewById(R.id.test);
         resultText = findViewById(R.id.result_text);
-        uploadButton = findViewById(R.id.upload_button);
+        addImageButton = findViewById(R.id.add_image);
         targetImage = findViewById(R.id.target_image);
+        postImageButton = findViewById(R.id.upload_image);
 
         testButton.setOnClickListener(this);
-        uploadButton.setOnClickListener(this);
+        addImageButton.setOnClickListener(this);
+        postImageButton.setOnClickListener(this);
 
         queue = Volley.newRequestQueue(this);
         sharedpreferences = getSharedPreferences("Session", Context.MODE_PRIVATE);
@@ -78,16 +85,50 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         String userId = sharedpreferences.getString("user-id", "Default");
                         String password = sharedpreferences.getString("password", "Default");
                         data.put("user-id", userId);
-                        data.put("password",password);
+                        data.put("password", password);
                         return data;
                     }
                 };
                 queue.add(stringRequest);
                 break;
-            case R.id.upload_button:
+            case R.id.add_image:
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, 0);
+                break;
+
+            case R.id.upload_image:
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                if (imageBitmap != null) {
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+                    byte[] imageBytes = baos.toByteArray();
+                    final String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+                    StringRequest request = new StringRequest(Request.Method.POST, Constants.UPLOAD_IMAGE,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    resultText.setText(response);
+                                }
+                            }, new ResponseErrorListener()) {
+                        protected Map<String, String> getParams() {
+                            Map<String, String> data = new HashMap<>();
+                            String userId = sharedpreferences.getString("user-id", "Default");
+                            String password = sharedpreferences.getString("password", "Default");
+                            data.put("user-id", userId);
+                            data.put("password", password);
+                            data.put("image", imageString);
+                            return data;
+                        }
+                    };
+                    queue.add(request);
+                    break;
+
+
+                } else {
+                    Toast.makeText(this, "No image was selected!", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
@@ -95,12 +136,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
             Uri targetUri = data.getData();
-            Bitmap bitmap;
             try {
-                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
-                targetImage.setImageBitmap(bitmap);
+                imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
+                targetImage.setImageBitmap(imageBitmap);
                 targetImage.setVisibility(View.VISIBLE);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

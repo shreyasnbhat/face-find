@@ -11,8 +11,8 @@
         android:id="@+id/test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:text="Test" />
 
 
@@ -32,12 +32,12 @@
         android:text="" />
 
     <Button
-        android:id="@+id/upload_button"
+        android:id="@+id/add_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:text="Upload Image" />
+        android:text="Add Image" />
 
     <ImageView
         android:id="@+id/target_image"
@@ -48,6 +48,14 @@
         android:layout_gravity="center_horizontal"
         app:srcCompat="@color/cardview_light_background"
         android:visibility="invisible"/>
+
+    <Button
+    android:id="@+id/upload_image"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center_horizontal"
+    android:text="Post Image" />
 
 
 </LinearLayout>
