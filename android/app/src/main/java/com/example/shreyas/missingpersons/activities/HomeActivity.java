@@ -1,11 +1,17 @@
 package com.example.shreyas.missingpersons.activities;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -17,6 +23,7 @@ import com.example.shreyas.missingpersons.Constants;
 import com.example.shreyas.missingpersons.R;
 import com.example.shreyas.missingpersons.response.ResponseErrorListener;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +33,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private TextView resultText;
     private SharedPreferences sharedpreferences;
     private RequestQueue queue;
+    private ImageView targetImage;
+    private Button uploadButton;
+    private String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +44,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         testButton = findViewById(R.id.test);
         resultText = findViewById(R.id.result_text);
+        uploadButton = (Button) findViewById(R.id.uploadButton);
+        targetImage = (ImageView) findViewById(R.id.TargetImage);
         testButton.setOnClickListener(this);
+        uploadButton.setOnClickListener(this);
 
         queue = Volley.newRequestQueue(this);
         sharedpreferences = getSharedPreferences("Session", Context.MODE_PRIVATE);
 
+    }
+
+    private void requestAllPermissions() {
+        PermissionManager.grantAllPermissions(HomeActivity.this, permissionList);
     }
 
     @Override
@@ -64,6 +81,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 };
                 queue.add(stringRequest);
                 break;
+            case R.id.uploadButton:
+                requestAllPermissions();
+                Intent intent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Uri targetUri = intent.getData();
+                Bitmap bitmap;
+                try {
+                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
+                    targetImage.setImageBitmap(bitmap);
+                    targetImage.setVisibility(View.VISIBLE);
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
         }
     }
 }
