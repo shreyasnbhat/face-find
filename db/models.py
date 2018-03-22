@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, ForeignKeyConstraint, Boolean, ARRAY
+from sqlalchemy import Column, Integer, String, ForeignKey, ForeignKeyConstraint, Boolean, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
@@ -17,12 +17,16 @@ class User(Base):
 class Encoding(Base):
     __tablename__ = 'encodings'
 
-    user_id = Column(String(20), ForeignKey('users.id'), primary_key=True)
-    encoding = Column(String(100))
+    id = Column(String(20), ForeignKey('users.id'), primary_key=True)
+    encoding_index = Column(Integer, primary_key=True)
+    encoding_count = Column(Integer, primary_key=True)
+    encoding = Column(Float)
 
-    # TODO: Restrict this to five
-    encoding_count = Column(Integer)
+class UserCount(Base):
+    __tablename__='usercount'
 
+    id = Column(String(20), ForeignKey('users.id'), primary_key=True)
+    count = Column(Integer)
 
 class AuthStore(Base):
     __tablename__ = 'authstore'

@@ -8,7 +8,7 @@ import random
 import json
 from werkzeug.utils import secure_filename
 import base64
-
+from main import get_encoding
 
 def check_auth(user_id, password):
     db_session = DBSession()
@@ -16,7 +16,8 @@ def check_auth(user_id, password):
     user_credentials = db_session.query(AuthStore).filter_by(id=user_id).first()
     db_session.close()
     if user:
-        if bcrypt.checkpw(password, user_credentials.phash.encode('utf-8')):
+        print(type(password),type(user_credentials.phash))
+        if bcrypt.checkpw(password, user_credentials.phash):
             login_user(user_credentials)
             return "success"
         else:
@@ -90,6 +91,9 @@ def test():
 
     user_id = request.form['user-id']
     password = request.form['password'].encode('utf-8')
+
+    print(type(password))
+
     if check_auth(user_id, password) is 'success':
         user = db_session.query(User).filter_by(id=user_id).first()
         return str(user.age)
@@ -100,20 +104,42 @@ def test():
 @login_required
 @app.route('/api/users/upload', methods=['POST'])
 def upload():
-    db_session = DBSession()
+
 
     user_id = request.form['user-id']
     password = request.form['password'].encode('utf-8')
-
-    db_session.close()
+    print(password)
 
     if check_auth(user_id, password) is 'success':
-        image = base64.b64decode(request.form['image'])
-        filename = user_id + '_' + str(time.time()) + '.jpg'
-        print("Filename is ", filename)
-        path = UPLOAD_FOLDER + '/' + filename
-        with open(path, 'wb') as f:
-            f.write(image)
-            return "Uploaded"
+        db_session = DBSession()
+        user_count = db_session.query(UserCount).filter_by(id=user_id).first()
+        if user_count:
+            if user_count.count==5:
+                db_session.close()
+                return "Max limit of uploads reached."
+            else:
+                user_count.count+=1
+                db_session.commit()
+        else:
+            db_session.add(UserCount(id=user_id,count=1))
+
+        #image = base64.b64decode(request.form['image'])
+        #print(image)
+        #filename = user_id + '_' + str(count) + '.jpg'
+        #print("Filename is ", filename)
+        #path = UPLOAD_FOLDER + '/' + filename
+        #with open(path, 'wb') as f:
+        #    f.write(image)
+        counter = db_session.query(UserCount).filter_by(id=user_id).first()
+        path = "/home/aditya/Desktop/download.jpg"
+        encodings = get_encoding(path)
+        for i in range(len(encodings)):
+            db_session.add(Encoding(id=user_id,
+                                encoding_index=i,
+                                encoding=encodings[i],
+                                encoding_count=counter.count))
+        db_session.commit()
+        db_session.close()
+        return "Uploaded"
 
     return "Failed"
