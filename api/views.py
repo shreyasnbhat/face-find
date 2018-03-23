@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, abort, flash, session, g, send_from_directory
+from flask import render_template, request, redirect, url_for, abort, flash, session, g, send_from_directory, send_file
 from flask.globals import session as session_obj
 from flask_login import login_user, login_required, logout_user, current_user
 from sqlalchemy.orm import exc
@@ -8,7 +8,7 @@ import random
 import json
 from werkzeug.utils import secure_filename
 import base64
-from main import get_encoding
+from main import get_encoding, face_recognition
 
 def check_auth(user_id, password):
     db_session = DBSession()
@@ -157,7 +157,37 @@ def upload():
     return "Upload Failed"
 
 
-@app.route('/api/images/',methods=['GET'])
-def serve_images():
-    print(url_for('static', filename='img/shre_1.jpg'))
-    return True
+@app.route('/api/match')
+def find_matches():
+    #user_id = request.form['user-id']
+    #password = request.form['password'].encode('utf-8')
+    user_id = 'shre'
+    password = str('1234').encode('utf-8')
+    db_session = DBSession()
+
+    if check_auth(user_id, password) is 'success':
+        known_users = [i[0] for i in db_session.query(Encoding.id).distinct()]
+        known_encodings = []
+        known_labels = []
+        for encoding_user in known_users:
+            count = db_session.query(UserCount).filter_by(id=encoding_user).one()
+            for i in range(count.count):
+                encoding_user_by_count = db_session.query(Encoding).filter_by(id=encoding_user,encoding_count=i+1).all()
+                if len(encoding_user_by_count) > 0:
+                    known_encodings.append([k.encoding for k in encoding_user_by_count])
+                    known_labels.append(encoding_user + '_' + str(i+1))
+
+        b = get_encoding('./api/static/img/shre_1.jpg')
+        face_distances = face_recognition.face_distance(known_encodings, b)
+        res_labels = []
+        res_dist = []
+        for i in range(len(face_distances)):
+            if face_distances[i] < 0.6:
+                res_labels.append(known_labels[i])
+                res_dist.append(str(face_distances[i]))
+        final_image_labels = set([label + '.jpg' for _, label in sorted(zip(res_dist, res_labels))])
+        final_image_labels.remove('shre_1.jpg')
+        print(",".join(list(final_image_labels)))
+        return ",".join(list(final_image_labels))
+
+    return "Success"

@@ -45,7 +45,40 @@
         android:background="@drawable/button_background"
         android:gravity="center"
         android:padding="8dp"
-        android:text="Post Image" />
+        android:text="Post Image"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/list_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/upload_image"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_background"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="View Images"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/find_match"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_image"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_background"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="Find Match"
+        android:textColor="@color/white" />
 
 
 </RelativeLayout>

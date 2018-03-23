@@ -1,4 +1,4 @@
-package com.example.shreyas.missingpersons.activities;
+package com.example.shreyas.missingpersons;
 
 import android.app.Activity;
 import android.content.Context;

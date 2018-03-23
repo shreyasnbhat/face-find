@@ -15,7 +15,6 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -25,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.shreyas.missingpersons.Constants;
+import com.example.shreyas.missingpersons.PermissionManager;
 import com.example.shreyas.missingpersons.R;
 import com.example.shreyas.missingpersons.response.ResponseErrorListener;
 
@@ -39,7 +39,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private RequestQueue queue;
     private ImageView targetImage;
     private FloatingActionButton addImageButton;
-    private Button postImageButton;
+    private Button postImageButton, listImageButton, matchButton;
     private Bitmap imageBitmap;
     private String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
@@ -53,9 +53,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         addImageButton = findViewById(R.id.add_image);
         targetImage = findViewById(R.id.target_image);
         postImageButton = findViewById(R.id.upload_image);
+        listImageButton = findViewById(R.id.list_image);
+        matchButton = findViewById(R.id.find_match);
 
         addImageButton.setOnClickListener(this);
         postImageButton.setOnClickListener(this);
+        listImageButton.setOnClickListener(this);
+        matchButton.setOnClickListener(this);
 
         queue = Volley.newRequestQueue(this);
         sharedpreferences = getSharedPreferences("Session", Context.MODE_PRIVATE);
@@ -78,7 +82,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.upload_image:
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 if (imageBitmap != null) {
-                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);
                     byte[] imageBytes = baos.toByteArray();
                     final String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 
@@ -111,6 +115,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(this, "No image was selected!", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.list_image:
+                Intent intent1 = new Intent(HomeActivity.this, ImageDisplayActivity.class);
+                startActivity(intent1);
+                break;
+            case R.id.find_match:
+                Intent intent2 = new Intent(HomeActivity.this, MatchActivity.class);
+                startActivity(intent2);
+                break;
+
         }
     }
 
