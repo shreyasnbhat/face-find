@@ -19,8 +19,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.AddUserActivity" />
-        <activity android:name=".activities.HomeActivity"></activity>
+        <activity
+            android:name=".activities.AddUserActivity"
+            android:parentActivityName=".activities.MainActivity">
+
+        </activity>
+        <activity
+            android:name=".activities.HomeActivity"
+            android:parentActivityName=".activities.MainActivity"></activity>
     </application>
 
 </manifest>

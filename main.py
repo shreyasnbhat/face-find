@@ -8,8 +8,11 @@ BASE = "./app/static/img/"
 
 def get_encoding(path):
     image = face_recognition.load_image_file(path)
-    encoding = face_recognition.face_encodings(image)[0]
-    return encoding
+    try:
+        encoding = face_recognition.face_encodings(image)[0]
+        return encoding
+    except:
+        return False
 
 
 def pre_process():

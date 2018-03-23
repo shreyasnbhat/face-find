@@ -8,3 +8,4 @@ face/*
 *.db
 app/static/*
 data/*
+api/static/img/*

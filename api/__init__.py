@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # Environment variables for uploads
-UPLOAD_FOLDER = './data/'
+UPLOAD_FOLDER = './api/static/img'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
 
 # Flask App initialization

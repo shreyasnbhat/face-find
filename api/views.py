@@ -21,9 +21,28 @@ def check_auth(user_id, password):
             login_user(user_credentials)
             return "success"
         else:
-            return "failed"
+            return "Wrong Password"
     else:
-        return "no such user exists"
+        return "No such user exists"
+
+def increment_count(user_id):
+    db_session = DBSession()
+    user_count = db_session.query(UserCount).filter_by(id=user_id).first()
+    if user_count:
+        if user_count.count==5:
+            db_session.close()
+            return 5,False
+        else:
+            user_count.count+=1
+            temp_user_count = user_count.count
+            db_session.commit()
+            db_session.close()
+            return temp_user_count,True
+    else:
+        db_session.add(UserCount(id=user_id,count=1))
+        db_session.commit()
+        db_session.close()
+        return 1,True
 
 
 @app.route('/api/users/add', methods=['POST'])
@@ -37,7 +56,7 @@ def add_user():
     gender = request.form['gender']
 
     if db_session.query(User).filter_by(id=user_id).first():
-        return "duplicate user id"
+        return "Duplicate User ID"
     else:
         db_session.add(User(id=user_id,
                             name=name,
@@ -52,11 +71,11 @@ def add_user():
                                  isAdmin=True))
         db_session.commit()
         db_session.close()
-        return "success"
+        return "User Created Successfully"
 
 
 @app.route('/api/users/delete', methods=['POST'])
-def rem_user():
+def remove_user():
     db_session = DBSession()
 
     user_id = request.form['user-id']
@@ -104,42 +123,41 @@ def test():
 @login_required
 @app.route('/api/users/upload', methods=['POST'])
 def upload():
-
-
     user_id = request.form['user-id']
     password = request.form['password'].encode('utf-8')
-    print(password)
+
+    db_session = DBSession()
 
     if check_auth(user_id, password) is 'success':
-        db_session = DBSession()
-        user_count = db_session.query(UserCount).filter_by(id=user_id).first()
-        if user_count:
-            if user_count.count==5:
-                db_session.close()
-                return "Max limit of uploads reached."
-            else:
-                user_count.count+=1
+        count,flag = increment_count(user_id)
+        if flag:
+            image = base64.b64decode(request.form['image'])
+            filename = user_id + '_' + str(count) + '.jpg'
+            print("Filename is ", filename)
+            path = UPLOAD_FOLDER + '/' + filename
+            with open(path, 'wb') as f:
+                f.write(image)
+
+            print("Path is",path)
+            encodings = get_encoding(path)
+            if encodings is not False:
+                for i in range(len(encodings)):
+                    db_session.add(Encoding(id=user_id,
+                                        encoding_index=i,
+                                        encoding=encodings[i],
+                                        encoding_count=count))
                 db_session.commit()
+                db_session.close()
+                return "Upload Successful"
+            else:
+                return "No face found in Image"
         else:
-            db_session.add(UserCount(id=user_id,count=1))
+            return "Max Images Sent"
 
-        #image = base64.b64decode(request.form['image'])
-        #print(image)
-        #filename = user_id + '_' + str(count) + '.jpg'
-        #print("Filename is ", filename)
-        #path = UPLOAD_FOLDER + '/' + filename
-        #with open(path, 'wb') as f:
-        #    f.write(image)
-        counter = db_session.query(UserCount).filter_by(id=user_id).first()
-        path = "/home/aditya/Desktop/download.jpg"
-        encodings = get_encoding(path)
-        for i in range(len(encodings)):
-            db_session.add(Encoding(id=user_id,
-                                encoding_index=i,
-                                encoding=encodings[i],
-                                encoding_count=counter.count))
-        db_session.commit()
-        db_session.close()
-        return "Uploaded"
+    return "Upload Failed"
 
-    return "Failed"
+
+@app.route('/api/images/',methods=['GET'])
+def serve_images():
+    print(url_for('static', filename='img/shre_1.jpg'))
+    return True

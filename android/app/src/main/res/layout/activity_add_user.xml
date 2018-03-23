@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:id="@+id/add_user"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context="com.example.shreyas.missingpersons.activities.MainActivity">
 
@@ -38,7 +39,6 @@
         android:layout_marginTop="4dp"
         android:hint="Age"
         android:inputType="number"
-        android:padding="8dp"
         android:text="" />
 
     <EditText
@@ -59,24 +59,6 @@
         android:background="@drawable/button_background"
         android:gravity="center"
         android:text="Confirm"
-        android:textColor="@color/white" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:padding="8dp"
-        android:text="Response"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/result_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:padding="8dp"
-        android:text=""
         android:textColor="@color/white" />
 
 

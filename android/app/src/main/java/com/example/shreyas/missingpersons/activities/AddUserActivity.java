@@ -1,5 +1,6 @@
 package com.example.shreyas.missingpersons.activities;
 
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,19 +26,23 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
 
     private EditText nameText, userIdText, passwordText, ageText, genderText;
     private Button confirmButton;
-    private TextView resultText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_user);
 
+        // add back arrow to toolbar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         nameText = findViewById(R.id.name_text);
         passwordText = findViewById(R.id.password_text);
         ageText = findViewById(R.id.age_text);
         genderText = findViewById(R.id.gender_text);
         confirmButton = findViewById(R.id.confirm_button);
-        resultText = findViewById(R.id.result_text);
         userIdText = findViewById(R.id.user_id_text);
 
         confirmButton.setOnClickListener(this);
@@ -54,7 +59,8 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                resultText.setText(response);
+                                Snackbar.make(findViewById(R.id.add_user),
+                                        response, Snackbar.LENGTH_SHORT).show();
                             }
                         }, new ResponseErrorListener()) {
                     protected Map<String, String> getParams() {

@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -16,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -32,12 +35,10 @@ import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button testButton;
-    private TextView resultText;
     private SharedPreferences sharedpreferences;
     private RequestQueue queue;
     private ImageView targetImage;
-    private Button addImageButton;
+    private FloatingActionButton addImageButton;
     private Button postImageButton;
     private Bitmap imageBitmap;
     private String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE};
@@ -49,13 +50,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         requestAllPermissions();
 
-        testButton = findViewById(R.id.test);
-        resultText = findViewById(R.id.result_text);
         addImageButton = findViewById(R.id.add_image);
         targetImage = findViewById(R.id.target_image);
         postImageButton = findViewById(R.id.upload_image);
 
-        testButton.setOnClickListener(this);
         addImageButton.setOnClickListener(this);
         postImageButton.setOnClickListener(this);
 
@@ -71,26 +69,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
-            case R.id.test:
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.TEST,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                resultText.setText(response);
-                            }
-                        }, new ResponseErrorListener()) {
-                    protected Map<String, String> getParams() {
-                        Map<String, String> data = new HashMap<>();
-                        String userId = sharedpreferences.getString("user-id", "Default");
-                        String password = sharedpreferences.getString("password", "Default");
-                        data.put("user-id", userId);
-                        data.put("password", password);
-                        return data;
-                    }
-                };
-                queue.add(stringRequest);
-                break;
             case R.id.add_image:
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -108,7 +86,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    resultText.setText(response);
+                                    Snackbar.make(findViewById(R.id.home_layout),
+                                            "Image was uploaded successfully", Snackbar.LENGTH_SHORT).show();
+
                                 }
                             }, new ResponseErrorListener()) {
                         protected Map<String, String> getParams() {
@@ -121,6 +101,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                             return data;
                         }
                     };
+                    request.setRetryPolicy(new DefaultRetryPolicy(
+                            0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                     queue.add(request);
                     break;
 

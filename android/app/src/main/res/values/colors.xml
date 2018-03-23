@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0288D1</color>
-    <color name="colorPrimaryDark">#01579B</color>
-    <color name="colorAccent">#E64A19</color>
+    <color name="colorPrimary">#F44336</color>
+    <color name="colorPrimaryDark">#D32F2F</color>
+    <color name="colorAccent">#FF9800</color>
     <color name="white">#ffffff</color>
     <color name="trwhite">#80ffffff</color>
-    <color name="grey">#455A64</color>
+    <color name="grey">#B0BEC5</color>
+    <color name="login">#f44336</color>
+    <color name="transp_red">#d0BF360C</color>
 </resources>

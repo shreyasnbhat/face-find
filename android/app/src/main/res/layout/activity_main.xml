@@ -1,85 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context="com.example.shreyas.missingpersons.activities.MainActivity">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="192dp"
-        android:scaleX="0.5"
-        android:scaleY="0.5"
-        android:src="@drawable/logo" />
-
-    <EditText
-        android:id="@+id/user_id_text"
-        style="@style/editTextTheme"
-        android:layout_below="@+id/logo"
-        android:hint="Username"
-        android:inputType="text"
-        android:text="" />
-
-    <EditText
-        android:id="@+id/password_text"
-        style="@style/editTextTheme"
-        android:layout_below="@+id/user_id_text"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:text="" />
-
-    <Button
-        android:id="@+id/login"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/password_text"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/button_background"
-        android:gravity="center"
-        android:text="Login"
-        android:textColor="@color/white" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="192dp"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:src="@drawable/logo"
+            android:tint="@color/colorAccent" />
 
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="8dp"
-        android:gravity="center_horizontal"
-        android:padding="8dp"
-        android:src="@drawable/ic_person_add_white_24dp" />
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/user_id_text"
+            style="@style/editTextTheme"
+            android:layout_below="@+id/logo"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_account_circle_white_24dp"
+            android:hint="Username"
+            android:inputType="text"
+            android:text="" />
 
 
-    <TextView
-        android:id="@+id/response_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/login"
-        android:fontFamily="sans-serif"
-        android:padding="8dp"
-        android:text="Response"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/result_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/response_header"
-        android:layout_margin="8dp"
-        android:padding="8dp"
-        android:text=""
-        android:textColor="@color/white" />
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/password_text"
+            style="@style/editTextTheme"
+            android:layout_below="@+id/user_id_text"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_lock_outline_white_24dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:text="" />
 
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/password_text"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_background"
+            android:gravity="center"
+            android:text="Login"
+            android:textColor="@color/white" />
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:src="@drawable/ic_person_add_white_24dp"
+            app:borderWidth="0dp"
+            app:fabSize="normal"
+            app:rippleColor="@color/grey" />
+
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

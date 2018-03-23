@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,21 +29,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText userIdText, passwordText;
     private Button loginButton;
     private FloatingActionButton addUserButton;
-    private TextView resultText;
     private RequestQueue queue;
     private SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-
-
         loginButton = findViewById(R.id.login);
         addUserButton = findViewById(R.id.add_user);
         userIdText = findViewById(R.id.user_id_text);
         passwordText = findViewById(R.id.password_text);
-        resultText = findViewById(R.id.result_text);
 
         addUserButton.setOnClickListener(this);
         loginButton.setOnClickListener(this);
@@ -62,10 +60,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                resultText.setText(response);
                                 if (response.contains("success")) {
                                     Intent i = new Intent(MainActivity.this, HomeActivity.class);
                                     startActivity(i);
+                                } else {
+                                    Snackbar.make(findViewById(R.id.main_layout),
+                                            response, Snackbar.LENGTH_SHORT).show();
                                 }
                             }
                         }, new ResponseErrorListener()) {

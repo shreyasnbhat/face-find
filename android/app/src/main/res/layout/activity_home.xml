@@ -1,61 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.shreyas.missingpersons.activities.MainActivity">
 
-    <Button
-        android:id="@+id/test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="Test" />
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:padding="8dp"
-        android:text="Response" />
-
-    <TextView
-        android:id="@+id/result_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:padding="8dp"
-        android:text="" />
-
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:text="Add Image" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:padding="8dp"
+        android:src="@drawable/ic_add_white_24dp"
+        app:borderWidth="0dp"
+        app:fabSize="normal"
+        app:rippleColor="@color/grey" />
 
     <ImageView
         android:id="@+id/target_image"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_gravity="center_horizontal"
         android:layout_margin="8dp"
         android:padding="8dp"
-        android:layout_gravity="center_horizontal"
-        app:srcCompat="@color/cardview_light_background"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        app:srcCompat="@color/cardview_light_background" />
 
     <Button
-    android:id="@+id/upload_image"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:gravity="center_horizontal"
-    android:text="Post Image" />
+        android:id="@+id/upload_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/target_image"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/button_background"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="Post Image" />
 
 
-</LinearLayout>
+</RelativeLayout>

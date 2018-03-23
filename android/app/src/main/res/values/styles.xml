@@ -13,12 +13,16 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">16dp</item>
         <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:background">@drawable/edit_text_background</item>
-        <item name="android:gravity">center_horizontal</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textColorHint">@color/trwhite</item>
-        <item name="android:padding">8dp</item>
+        <item name="android:padding">16dp</item>
         <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="generalnotitle">
+        <item name="android:windowNoTitle">true</item>
     </style>
 
 </resources>
