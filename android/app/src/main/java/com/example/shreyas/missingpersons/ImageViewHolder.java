@@ -18,6 +18,7 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
 
     public TextView imageIdTextView;
     public ImageView imageView;
+    public TextView imageDescriptionTextView;
 
     private ImageItem imageItem;
 
@@ -26,6 +27,7 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
 
         imageIdTextView = itemView.findViewById(R.id.image_id);
         imageView = itemView.findViewById(R.id.image);
+        imageDescriptionTextView = itemView.findViewById(R.id.image_desc);
     }
 
     public void setImageItem(ImageItem imageItem) {
@@ -35,4 +37,5 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
     public void setImage() {
         Picasso.get().load(imageItem.getImageUrl()).networkPolicy(NetworkPolicy.NO_CACHE).fit().centerCrop().placeholder(R.drawable.progress).into(imageView);
     }
+
 }

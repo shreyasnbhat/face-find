@@ -34,8 +34,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder> {
     @Override
     public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final Context context = parent.getContext();
-        View itemView = LayoutInflater.from(context).inflate(R.layout.image_item_format,parent,false);
-        return new ImageViewHolder(itemView,context);
+        View itemView = LayoutInflater.from(context).inflate(R.layout.image_item_format, parent, false);
+        return new ImageViewHolder(itemView, context);
     }
 
     @Override
@@ -44,5 +44,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder> {
         holder.setImageItem(item);
         holder.setImage();
         holder.imageIdTextView.setText(item.getImageId());
+        holder.imageDescriptionTextView.setText(item.getImageDescription());
     }
 }

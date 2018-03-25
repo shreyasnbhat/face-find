@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -35,6 +37,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     private ImageAdapter adapter;
     private SharedPreferences sharedpreferences;
     private Button processButton;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +54,16 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 
         rv = findViewById(R.id.rv);
         processButton = findViewById(R.id.process);
+        progressBar = findViewById(R.id.progress);
+        progressBar.setVisibility(View.INVISIBLE);
 
         processButton.setOnClickListener(this);
 
         adapter = new ImageAdapter(imageList, this);
         rv.setAdapter(adapter);
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setLayoutManager(new GridLayoutManager(this, 2));
         rv.setHasFixedSize(true);
+        rv.setVisibility(View.INVISIBLE);
 
         queue = Volley.newRequestQueue(this);
 
@@ -69,15 +75,24 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
 
             case R.id.process:
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, Constants.MATCH,
+                rv.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setIndeterminate(true);
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.MATCH,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 String[] files = response.split(",", -2);
+                                imageList.clear();
                                 for (int i = 0; i < files.length; i++) {
                                     Log.e("TAG", files[i]);
-                                    imageList.add(new ImageItem(Constants.IMAGE_REQUEST + '/' + files[i], (i + 1) + ""));
+                                    ImageItem imageItem = new ImageItem(Constants.IMAGE_REQUEST + '/' + files[i], (i + 1) + "");
+                                    String[] userIdOfImageMatches = files[i].split("_", -2);
+                                    imageItem.setImageDescription(userIdOfImageMatches[0]);
+                                    imageList.add(imageItem);
                                 }
+                                progressBar.setVisibility(View.INVISIBLE);
+                                rv.setVisibility(View.VISIBLE);
                                 rv.getRecycledViewPool().clear();
                                 adapter.notifyDataSetChanged();
                             }
@@ -88,13 +103,13 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                         String password = sharedpreferences.getString("password", "Default");
                         data.put("user-id", userId);
                         data.put("password", password);
-                        data.put("filename", "shre_1.jpg");
+                        data.put("filename", "shre_2.jpg");
                         return data;
                     }
                 };
 
                 stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                        3000,
+                        5000,
                         DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

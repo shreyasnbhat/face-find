@@ -6,9 +6,12 @@ import json, os, time, bcrypt, hashlib
 from api import *
 import random
 import json
+import numpy as np
 from werkzeug.utils import secure_filename
 import base64
+from operator import itemgetter
 from main import get_encoding, face_recognition
+
 
 def check_auth(user_id, password):
     db_session = DBSession()
@@ -16,7 +19,7 @@ def check_auth(user_id, password):
     user_credentials = db_session.query(AuthStore).filter_by(id=user_id).first()
     db_session.close()
     if user:
-        print(type(password),type(user_credentials.phash))
+        print(type(password), type(user_credentials.phash))
         if bcrypt.checkpw(password, user_credentials.phash):
             login_user(user_credentials)
             return "success"
@@ -25,24 +28,25 @@ def check_auth(user_id, password):
     else:
         return "No such user exists"
 
+
 def increment_count(user_id):
     db_session = DBSession()
     user_count = db_session.query(UserCount).filter_by(id=user_id).first()
     if user_count:
-        if user_count.count==5:
+        if user_count.count == 5:
             db_session.close()
-            return 5,False
+            return 5, False
         else:
-            user_count.count+=1
+            user_count.count += 1
             temp_user_count = user_count.count
             db_session.commit()
             db_session.close()
-            return temp_user_count,True
+            return temp_user_count, True
     else:
-        db_session.add(UserCount(id=user_id,count=1))
+        db_session.add(UserCount(id=user_id, count=1))
         db_session.commit()
         db_session.close()
-        return 1,True
+        return 1, True
 
 
 @app.route('/api/users/add', methods=['POST'])
@@ -129,7 +133,7 @@ def upload():
     db_session = DBSession()
 
     if check_auth(user_id, password) is 'success':
-        count,flag = increment_count(user_id)
+        count, flag = increment_count(user_id)
         if flag:
             image = base64.b64decode(request.form['image'])
             filename = user_id + '_' + str(count) + '.jpg'
@@ -138,13 +142,12 @@ def upload():
             with open(path, 'wb') as f:
                 f.write(image)
 
-            print("Path is",path)
+            print("Path is", path)
             encodings = get_encoding(path)
+            encoding_str = json.dumps(list(encodings))
             if encodings is not False:
-                for i in range(len(encodings)):
-                    db_session.add(Encoding(id=user_id,
-                                        encoding_index=i,
-                                        encoding=encodings[i],
+                db_session.add(Encoding(id=user_id,
+                                        encoding=encoding_str,
                                         encoding_count=count))
                 db_session.commit()
                 db_session.close()
@@ -157,37 +160,40 @@ def upload():
     return "Upload Failed"
 
 
-@app.route('/api/match')
+@login_required
+@app.route('/api/match', methods=['POST'])
 def find_matches():
-    #user_id = request.form['user-id']
-    #password = request.form['password'].encode('utf-8')
-    user_id = 'shre'
-    password = str('1234').encode('utf-8')
+    user_id = request.form['user-id']
+    password = request.form['password'].encode('utf-8')
     db_session = DBSession()
 
+    print(user_id, password)
+
     if check_auth(user_id, password) is 'success':
-        known_users = [i[0] for i in db_session.query(Encoding.id).distinct()]
+        known_users = [i[0] for i in db_session.query(Encoding.id).filter(Encoding.id != user_id).distinct()]
         known_encodings = []
         known_labels = []
         for encoding_user in known_users:
             count = db_session.query(UserCount).filter_by(id=encoding_user).one()
             for i in range(count.count):
-                encoding_user_by_count = db_session.query(Encoding).filter_by(id=encoding_user,encoding_count=i+1).all()
-                if len(encoding_user_by_count) > 0:
-                    known_encodings.append([k.encoding for k in encoding_user_by_count])
-                    known_labels.append(encoding_user + '_' + str(i+1))
+                encoding_user_by_count = db_session.query(Encoding).filter_by(id=encoding_user,
+                                                                              encoding_count=i + 1).first()
+                known_encodings.append(json.loads(encoding_user_by_count.encoding))
+                known_labels.append(encoding_user + '_' + str(i + 1))
 
-        b = get_encoding('./api/static/img/shre_1.jpg')
-        face_distances = face_recognition.face_distance(known_encodings, b)
-        res_labels = []
-        res_dist = []
-        for i in range(len(face_distances)):
-            if face_distances[i] < 0.6:
-                res_labels.append(known_labels[i])
-                res_dist.append(str(face_distances[i]))
-        final_image_labels = set([label + '.jpg' for _, label in sorted(zip(res_dist, res_labels))])
-        final_image_labels.remove('shre_1.jpg')
+        current_user = db_session.query(UserCount).filter_by(id=user_id).first()
+        result = set()
+
+        for i in range(current_user.count):
+            b = get_encoding('./api/static/img/' + user_id + "_" + str(i + 1) + ".jpg")
+            face_distances = face_recognition.face_distance(np.array(known_encodings), b)
+            for i in range(len(face_distances)):
+                if face_distances[i] < 0.6:
+                    result.add((known_labels[i], str(face_distances[i])))
+
+        final_image_labels = set([label + '.jpg' for label, _ in sorted(result, key=itemgetter(1))])
         print(",".join(list(final_image_labels)))
         return ",".join(list(final_image_labels))
 
-    return "Success"
+    else:
+        return "Authentication Failed"

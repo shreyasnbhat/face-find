@@ -5,13 +5,14 @@ package com.example.shreyas.missingpersons;
  */
 
 public class Constants {
-    public static String ROOT = "http://192.168.43.41:5000";
-    public static String IMAGE_REQUEST = ROOT + "/static/img";
-    public static String BASE = "http://192.168.43.41:5000/api/";
-    public static String ADD_USER = BASE + "users/add";
-    public static String DELETE_USER = BASE + "users/delete";
-    public static String AUTHENTICATE = BASE + "authenticate";
-    public static String TEST = BASE + "test";
-    public static String UPLOAD_IMAGE = BASE + "users/upload";
-    public static String MATCH = BASE + "match";
+    public static String SERVER_IP = "192.168.0.109";
+    public static String PORT = "5000";
+    public static String ROOT = "http://" + SERVER_IP + ":" + PORT + "/";
+    public static String IMAGE_REQUEST = ROOT + "static/img";
+    public static String API = ROOT + "api/";
+    public static String ADD_USER = API + "users/add";
+    public static String DELETE_USER = API + "users/delete";
+    public static String AUTHENTICATE = API + "authenticate";
+    public static String UPLOAD_IMAGE = API + "users/upload";
+    public static String MATCH = API + "match";
 }

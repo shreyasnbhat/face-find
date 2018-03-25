@@ -8,4 +8,5 @@
     <color name="grey">#B0BEC5</color>
     <color name="login">#f44336</color>
     <color name="transp_red">#d0BF360C</color>
+    <color name="blue_grey">#263238</color>
 </resources>

@@ -18,9 +18,8 @@ class Encoding(Base):
     __tablename__ = 'encodings'
 
     id = Column(String(20), ForeignKey('users.id'), primary_key=True)
-    encoding_index = Column(Integer, primary_key=True)
     encoding_count = Column(Integer, primary_key=True)
-    encoding = Column(Float)
+    encoding = Column(String)
 
 class UserCount(Base):
     __tablename__='usercount'
