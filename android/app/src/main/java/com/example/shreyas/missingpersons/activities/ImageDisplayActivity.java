@@ -44,7 +44,10 @@ public class ImageDisplayActivity extends AppCompatActivity {
         String userId = sharedpreferences.getString("user-id", "Default");
 
         for (int i = 1; i <= 5; i++) {
-            imageList.add(new ImageItem(Constants.IMAGE_REQUEST + "/" + userId + "_" + i + ".jpg", i + ""));
+            imageList.add(new ImageItem(Constants.IMAGE_REQUEST + "/" + userId + "_m" + i + ".jpg", i + ""));
+        }
+        for (int i = 1; i <= 5; i++) {
+            imageList.add(new ImageItem(Constants.IMAGE_REQUEST + "/" + userId + "_f" + i + ".jpg", i+5 + ""));
         }
         adapter.notifyDataSetChanged();
     }

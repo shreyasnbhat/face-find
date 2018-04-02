@@ -33,113 +33,48 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+public class HomeActivity extends AppCompatActivity  implements View.OnClickListener {
 
     private SharedPreferences sharedpreferences;
     private RequestQueue queue;
-    private ImageView targetImage;
-    private FloatingActionButton addImageButton;
-    private Button postImageButton, listImageButton, matchButton;
-    private Bitmap imageBitmap;
-    private String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE};
+    private Button reportMissingButton, reportFoundButton, findMatchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        requestAllPermissions();
+        reportMissingButton = findViewById(R.id.report_missing);
+        reportFoundButton = findViewById(R.id.report_found);
+        findMatchButton = findViewById(R.id.find_match);
 
-        addImageButton = findViewById(R.id.add_image);
-        targetImage = findViewById(R.id.target_image);
-        postImageButton = findViewById(R.id.upload_image);
-        listImageButton = findViewById(R.id.list_image);
-        matchButton = findViewById(R.id.find_match);
-
-        addImageButton.setOnClickListener(this);
-        postImageButton.setOnClickListener(this);
-        listImageButton.setOnClickListener(this);
-        matchButton.setOnClickListener(this);
+        reportMissingButton.setOnClickListener(this);
+        reportFoundButton.setOnClickListener(this);
+        findMatchButton.setOnClickListener(this);
 
         queue = Volley.newRequestQueue(this);
         sharedpreferences = getSharedPreferences("Session", Context.MODE_PRIVATE);
 
     }
 
-    private void requestAllPermissions() {
-        PermissionManager.grantAllPermissions(HomeActivity.this, permissionList);
-    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.add_image:
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 0);
+            case R.id.report_found:
+                Intent intent_found = new Intent(HomeActivity.this, ReportFoundActivity.class);
+                startActivity(intent_found);
                 break;
 
-            case R.id.upload_image:
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                if (imageBitmap != null) {
-                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);
-                    byte[] imageBytes = baos.toByteArray();
-                    final String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-
-                    StringRequest request = new StringRequest(Request.Method.POST, Constants.UPLOAD_IMAGE,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    Snackbar.make(findViewById(R.id.home_layout),
-                                            "Image was uploaded successfully", Snackbar.LENGTH_SHORT).show();
-
-                                }
-                            }, new ResponseErrorListener()) {
-                        protected Map<String, String> getParams() {
-                            Map<String, String> data = new HashMap<>();
-                            String userId = sharedpreferences.getString("user-id", "Default");
-                            String password = sharedpreferences.getString("password", "Default");
-                            data.put("user-id", userId);
-                            data.put("password", password);
-                            data.put("image", imageString);
-                            return data;
-                        }
-                    };
-                    request.setRetryPolicy(new DefaultRetryPolicy(
-                            0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                    queue.add(request);
-                    break;
-
-
-                } else {
-                    Toast.makeText(this, "No image was selected!", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.list_image:
-                Intent intent1 = new Intent(HomeActivity.this, ImageDisplayActivity.class);
-                startActivity(intent1);
+            case R.id.report_missing:
+                Intent intent_missing = new Intent(HomeActivity.this, ReportMissingActivity.class);
+                startActivity(intent_missing);
                 break;
             case R.id.find_match:
                 Intent intent2 = new Intent(HomeActivity.this, MatchActivity.class);
                 startActivity(intent2);
                 break;
-
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            Uri targetUri = data.getData();
-            try {
-                imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
-                targetImage.setImageBitmap(imageBitmap);
-                targetImage.setVisibility(View.VISIBLE);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }

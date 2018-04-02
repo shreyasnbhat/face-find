@@ -30,7 +30,9 @@
             android:parentActivityName=".activities.HomeActivity" />
         <activity
             android:name=".activities.MatchActivity"
-            android:parentActivityName=".activities.HomeActivity"></activity>
+            android:parentActivityName=".activities.HomeActivity" />
+        <activity android:name=".activities.ReportFoundActivity" />
+        <activity android:name=".activities.ReportMissingActivity"></activity>
     </application>
 
 </manifest>

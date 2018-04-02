@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.shreyas.missingpersons.activities.MainActivity">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:padding="8dp"
+        android:src="@drawable/ic_add_white_24dp"
+        app:borderWidth="0dp"
+        app:fabSize="normal"
+        app:rippleColor="@color/grey" />
+
+    <ImageView
+        android:id="@+id/target_image"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:visibility="invisible"
+        app:srcCompat="@color/cardview_light_background" />
+
+    <Button
+        android:id="@+id/upload_image"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/add_image"
+        android:layout_alignStart="@+id/target_image"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/button_background"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="Upload Image"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/list_image"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/upload_image"
+        android:layout_alignBottom="@+id/upload_image"
+        android:layout_gravity="center_horizontal"
+        android:layout_toStartOf="@+id/add_image"
+        android:background="@drawable/button_background"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="View Images"
+        android:textColor="@color/white" />
+
+
+    <EditText
+        android:id="@+id/edit_name"
+        style="@style/editTextTheme"
+        android:layout_above="@+id/edit_age"
+        android:layout_alignParentStart="true"
+        android:hint="Name"
+        android:inputType="text"
+        android:text="" />
+
+    <EditText
+        android:id="@+id/edit_age"
+        style="@style/editTextTheme"
+        android:layout_above="@+id/edit_gender"
+        android:layout_alignParentStart="true"
+        android:hint="Age"
+        android:inputType="number"
+        android:text="" />
+
+    <EditText
+        android:id="@+id/edit_gender"
+        style="@style/editTextTheme"
+        android:layout_above="@+id/edit_location"
+        android:layout_alignParentStart="true"
+        android:hint="Gender"
+        android:inputType="text"
+        android:text="" />
+
+    <EditText
+        android:id="@+id/edit_location"
+        style="@style/editTextTheme"
+        android:layout_above="@+id/add_image"
+        android:layout_alignParentStart="true"
+        android:hint="Location"
+        android:inputType="text"
+        android:text="" />
+
+
+</RelativeLayout>

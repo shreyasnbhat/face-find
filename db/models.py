@@ -11,18 +11,52 @@ class User(Base):
     id = Column(String(20), primary_key=True)
     gender = Column(String(20))
     age = Column(Integer)
-    encodings = relationship('Encoding')
+    missing_encodings = relationship('MissingImageEncoding')
+    found_encodings =  relationship('FoundImageEncoding')
 
 
-class Encoding(Base):
-    __tablename__ = 'encodings'
+class MissingImageEncoding(Base):
+    __tablename__ = 'missing_encodings'
 
     id = Column(String(20), ForeignKey('users.id'), primary_key=True)
     encoding_count = Column(Integer, primary_key=True)
     encoding = Column(String)
 
-class UserCount(Base):
-    __tablename__='usercount'
+class FoundImageEncoding(Base):
+    __tablename__ = 'found_encodings'
+
+    id = Column(String(20), ForeignKey('users.id'), primary_key=True)
+    encoding_count = Column(Integer, primary_key=True)
+    encoding = Column(String)
+
+class ImageDetailsFound(Base):
+    __tablename__ = 'image_details_found'
+
+    id = Column(String(20), ForeignKey('users.id'), primary_key=True)
+    encoding_count = Column(Integer, primary_key=True)
+    name = Column(String(80), nullable=False)
+    gender = Column(String(20))
+    age = Column(Integer)
+    location = Column(String(80))
+
+class ImageDetailsMissing(Base):
+    __tablename__ = 'image_details_missing'
+
+    id = Column(String(20), ForeignKey('users.id'), primary_key=True)
+    encoding_count = Column(Integer, primary_key=True)
+    name = Column(String(80), nullable=False)
+    gender = Column(String(20))
+    age = Column(Integer)
+    location = Column(String(80))
+
+class UserCountFound(Base):
+    __tablename__='usercount_found'
+
+    id = Column(String(20), ForeignKey('users.id'), primary_key=True)
+    count = Column(Integer)
+
+class UserCountMissing(Base):
+    __tablename__='usercount_missing'
 
     id = Column(String(20), ForeignKey('users.id'), primary_key=True)
     count = Column(Integer)
