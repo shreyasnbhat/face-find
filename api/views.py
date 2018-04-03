@@ -29,47 +29,37 @@ def check_auth(user_id, password):
         return "No such user exists"
 
 
-def increment_count_missing(user_id):
+def increment_count(user_id,child_status):
     db_session = DBSession()
-    user_count = db_session.query(UserCountMissing).filter_by(id=user_id).first()
+    user_count = db_session.query(UserCount).filter_by(id=user_id).first()
     if user_count:
-        if user_count.count == 5:
+        count = 0
+        if(child_status=="missing"):
+            count = user_count.missing_count
+        else:
+            count = user_count.found_count
+        if count == 5:
             db_session.close()
             print("max reached")
             return 5, False
         else:
-            user_count.count += 1
-            temp_user_count = user_count.count
+            count += 1
+            if(child_status=="missing"):
+                setattr(user_count,'missing_count',count)
+            else:
+                setattr(user_count,'found_count',count)
             db_session.commit()
             db_session.close()
             print("temp_user_count")
-            return temp_user_count, True
+            return count, True
     else:
-        db_session.add(UserCountMissing(id=user_id, count=1))
-        db_session.commit()
-        db_session.close()
-        return 1, True
-def increment_count_found(user_id):
-    db_session = DBSession()
-    user_count = db_session.query(UserCountFound).filter_by(id=user_id).first()
-    if user_count:
-        if user_count.count == 5:
-            db_session.close()
-            print("max reached")
-            return 5, False
+        if child_status=="missing":
+            db_session.add(UserCount(id=user_id, missing_count=1, found_count=0))
         else:
-            user_count.count += 1
-            temp_user_count = user_count.count
-            db_session.commit()
-            db_session.close()
-            print("temp_user_count")
-            return temp_user_count, True
-    else:
-        db_session.add(UserCountFound(id=user_id, count=1))
+            db_session.add(UserCount(id=user_id, missing_count=0, found_count=1))
         db_session.commit()
         db_session.close()
         return 1, True
-
 
 @app.route('/api/users/add', methods=['POST'])
 def add_user():
@@ -147,22 +137,23 @@ def test():
 
 
 @login_required
-@app.route('/api/users/upload/missing', methods=['POST'])
-def upload_missing():
+@app.route('/api/users/upload', methods=['POST'])
+def upload():
     user_id = request.form['user-id']
     password = request.form['password'].encode('utf-8')
     name = request.form['name']
     age = request.form['age']
     location = request.form['location']
     gender = request.form['gender']
+    child_status = request.form['child_status']
 
 
     db_session = DBSession()
     if check_auth(user_id, password) is 'success':
-        count, flag = increment_count_missing(user_id)
+        count, flag = increment_count(user_id, child_status)
         if flag:
             image = base64.b64decode(request.form['image'])
-            filename = user_id + '_m' + str(count) + '.jpg'
+            filename = user_id + '_'+ child_status[0] + str(count) + '.jpg'
             print("Filename is ", filename)
             path = UPLOAD_FOLDER + '/' + filename
             with open(path, 'wb') as f:
@@ -172,46 +163,12 @@ def upload_missing():
             encodings = get_encoding(path)
             encoding_str = json.dumps(list(encodings))
             if encodings is not False:
-                db_session.add(MissingImageEncoding(id=user_id,encoding=encoding_str,encoding_count=count))
-                db_session.add(ImageDetailsMissing(id = user_id, encoding_count=count, name=name, age=age, gender = gender, location=location))
-
-                db_session.commit()
-                db_session.close()
-                return "Upload Successful"
-            else:
-                return "No face found in Image"
-        else:
-            return "Max Images Sent"
-
-    return "Upload Failed"
-
-@login_required
-@app.route('/api/users/upload/found', methods=['POST'])
-def upload_found():
-    user_id = request.form['user-id']
-    password = request.form['password'].encode('utf-8')
-    name = request.form['name']
-    age = request.form['age']
-    location = request.form['location']
-    gender = request.form['gender']
-
-    db_session = DBSession()
-    if check_auth(user_id, password) is 'success':
-        count, flag = increment_count_found(user_id)
-        if flag:
-            image = base64.b64decode(request.form['image'])
-            filename = user_id + '_f' + str(count) + '.jpg'
-            print("Filename is ", filename)
-            path = UPLOAD_FOLDER + '/' + filename
-            with open(path, 'wb') as f:
-                f.write(image)
-
-            print("Path is", path)
-            encodings = get_encoding(path)
-            encoding_str = json.dumps(list(encodings))
-            if encodings is not False:
-                db_session.add(FoundImageEncoding(id=user_id,encoding=encoding_str,encoding_count=count))
-                db_session.add(ImageDetailsFound(id = user_id, encoding_count = count, name=name, age=age, gender = gender, location=location))
+                if child_status=="missing":
+                    db_session.add(MissingImageEncoding(id=user_id,encoding=encoding_str,encoding_count=count))
+                    db_session.add(ImageDetailsMissing(id = user_id, encoding_count=count, name=name, age=age, gender = gender, location=location))
+                else:
+                    db_session.add(FoundImageEncoding(id=user_id,encoding=encoding_str,encoding_count=count))
+                    db_session.add(ImageDetailsFound(id = user_id, encoding_count = count, name=name, age=age, gender = gender, location=location))
                 db_session.commit()
                 db_session.close()
                 return "Upload Successful"
@@ -238,18 +195,18 @@ def find_matches():
         known_encodings = []
         known_labels = []
         for encoding_user in known_users:
-            count = db_session.query(UserCountMissing).filter_by(id=encoding_user).one()
-            print(count.count)
-            for i in range(count.count):
+            count = db_session.query(UserCount).filter_by(id=encoding_user).one()
+            print(count.missing_count)
+            for i in range(count.missing_count):
                 encoding_user_by_count = db_session.query(MissingImageEncoding).filter_by(id=encoding_user,encoding_count=i + 1).first()
                 print(encoding_user_by_count)
                 known_encodings.append(json.loads(encoding_user_by_count.encoding))
                 known_labels.append(encoding_user + '_m' + str(i + 1))
 
-        current_user = db_session.query(UserCountFound).filter_by(id=user_id).first()
+        current_user = db_session.query(UserCount).filter_by(id=user_id).first()
         result = set()
 
-        for i in range(current_user.count):
+        for i in range(current_user.found_count):
             b = get_encoding('./api/static/img/' + user_id + "_f" + str(i + 1) + ".jpg")
             face_distances = face_recognition.face_distance(np.array(known_encodings), b)
             for i in range(len(face_distances)):

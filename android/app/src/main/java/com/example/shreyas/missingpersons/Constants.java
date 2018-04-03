@@ -13,7 +13,7 @@ public class Constants {
     public static String ADD_USER = API + "users/add";
     public static String DELETE_USER = API + "users/delete";
     public static String AUTHENTICATE = API + "authenticate";
-    public static String UPLOAD_MISSING_IMAGE = API + "users/upload/missing";
+    public static String UPLOAD_IMAGE = API + "users/upload";
     public static String UPLOAD_FOUND_IMAGE = API + "users/upload/found";
     public static String MATCH = API + "match";
 }

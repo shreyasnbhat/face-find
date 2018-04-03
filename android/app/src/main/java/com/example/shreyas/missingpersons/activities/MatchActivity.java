@@ -99,11 +99,11 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                         }, new ResponseErrorListener()) {
                     protected Map<String, String> getParams() {
                         Map<String, String> data = new HashMap<>();
-                        String userId = sharedpreferences.getString("user-id", "Default");
-                        String password = sharedpreferences.getString("password", "Default");
+                        String userId = sharedpreferences.getString("user-id", "adi");
+                        String password = sharedpreferences.getString("password", "qwerty");
                         data.put("user-id", userId);
                         data.put("password", password);
-                        data.put("filename", "shre_2.jpg");
+                        data.put("filename", "adi_m2.jpg");
                         return data;
                     }
                 };

@@ -49,17 +49,12 @@ class ImageDetailsMissing(Base):
     age = Column(Integer)
     location = Column(String(80))
 
-class UserCountFound(Base):
-    __tablename__='usercount_found'
+class UserCount(Base):
+    __tablename__='usercount'
 
     id = Column(String(20), ForeignKey('users.id'), primary_key=True)
-    count = Column(Integer)
-
-class UserCountMissing(Base):
-    __tablename__='usercount_missing'
-
-    id = Column(String(20), ForeignKey('users.id'), primary_key=True)
-    count = Column(Integer)
+    missing_count = Column(Integer)
+    found_count = Column(Integer)
 
 class AuthStore(Base):
     __tablename__ = 'authstore'

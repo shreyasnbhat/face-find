@@ -34,7 +34,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReportMissingActivity extends AppCompatActivity  implements View.OnClickListener {
+public class ReportActivity extends AppCompatActivity  implements View.OnClickListener {
 
 
 
@@ -46,11 +46,12 @@ public class ReportMissingActivity extends AppCompatActivity  implements View.On
     private Bitmap imageBitmap;
     private String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE};
     private EditText nametext, agetext, gentext, loctext;
+    private String childStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_report_found);
+        setContentView(R.layout.activity_report);
 
         requestAllPermissions();
 
@@ -62,6 +63,7 @@ public class ReportMissingActivity extends AppCompatActivity  implements View.On
         agetext = findViewById(R.id.edit_age);
         gentext = findViewById(R.id.edit_gender);
         loctext = findViewById(R.id.edit_location);
+        childStatus = getIntent().getStringExtra("child_status");
 
 
         addImageButton.setOnClickListener(this);
@@ -75,7 +77,7 @@ public class ReportMissingActivity extends AppCompatActivity  implements View.On
     }
 
     private void requestAllPermissions() {
-        PermissionManager.grantAllPermissions(ReportMissingActivity.this, permissionList);
+        PermissionManager.grantAllPermissions(ReportActivity.this, permissionList);
     }
 
     @Override
@@ -98,7 +100,7 @@ public class ReportMissingActivity extends AppCompatActivity  implements View.On
                     byte[] imageBytes = baos.toByteArray();
                     final String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 
-                    StringRequest request = new StringRequest(Request.Method.POST, Constants.UPLOAD_MISSING_IMAGE,
+                    StringRequest request = new StringRequest(Request.Method.POST, Constants.UPLOAD_IMAGE,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
@@ -118,7 +120,7 @@ public class ReportMissingActivity extends AppCompatActivity  implements View.On
                             data.put("age", agetext.getText().toString());
                             data.put("gender", gentext.getText().toString());
                             data.put("location", loctext.getText().toString());
-
+                            data.put("child_status",childStatus);
 
                             return data;
                         }
@@ -135,7 +137,7 @@ public class ReportMissingActivity extends AppCompatActivity  implements View.On
                 break;
             case R.id.list_image:
                 nametext.setText("view");
-                Intent intent1 = new Intent(ReportMissingActivity.this, ImageDisplayActivity.class);
+                Intent intent1 = new Intent(ReportActivity.this, ImageDisplayActivity.class);
                 startActivity(intent1);
 
                 break;
