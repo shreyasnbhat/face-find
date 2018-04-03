@@ -5,7 +5,7 @@ package com.example.shreyas.missingpersons;
  */
 
 public class Constants {
-    public static String SERVER_IP = "192.168.43.46";
+    public static String SERVER_IP = "192.168.43.41";
     public static String PORT = "5000";
     public static String ROOT = "http://" + SERVER_IP + ":" + PORT + "/";
     public static String IMAGE_REQUEST = ROOT + "static/img";

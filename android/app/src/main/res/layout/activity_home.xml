@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_layout"
@@ -10,50 +10,39 @@
 
 
     <Button
-        android:id="@+id/report_missing"
+        android:id="@+id/report"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/report_found"
+        android:layout_height="0dp"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/report_found"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="154dp"
-        android:background="@drawable/button_background"
-        android:gravity="center"
+        android:layout_weight="1"
+        android:background="#43A047"
         android:padding="8dp"
-        android:text="Report Missing Child"
-        android:textColor="@color/white" />
+        android:text="Report"
+        android:textColor="@color/white"
+        android:textSize="22sp" />
 
-    <Button
-        android:id="@+id/report_found"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/report_missing"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_background"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="Report Found Child"
-        android:textColor="@color/white"  />
     <Button
         android:id="@+id/find_match"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/report_found"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_background"
-        android:gravity="center"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#039BE5"
         android:padding="8dp"
         android:text="Find Match"
-        android:textColor="@color/white"  />
+        android:textColor="@color/white"
+        android:textSize="22sp" />
+
+    <Button
+        android:id="@+id/view_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorAccent"
+        android:padding="8dp"
+        android:text="View Images"
+        android:textColor="@color/white"
+        android:textSize="22sp" />
 
 
-</RelativeLayout>
+</LinearLayout>

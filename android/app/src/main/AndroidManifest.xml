@@ -31,7 +31,9 @@
         <activity
             android:name=".activities.MatchActivity"
             android:parentActivityName=".activities.HomeActivity" />
-        <activity android:name=".activities.ReportActivity"></activity>
+        <activity
+            android:name=".activities.ReportActivity"
+            android:parentActivityName=".activities.HomeActivity"/>
     </application>
 
 </manifest>

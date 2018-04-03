@@ -1,48 +1,19 @@
 package com.example.shreyas.missingpersons.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.shreyas.missingpersons.Constants;
-import com.example.shreyas.missingpersons.PermissionManager;
 import com.example.shreyas.missingpersons.R;
-import com.example.shreyas.missingpersons.response.ResponseErrorListener;
 
 
-import java.io.ByteArrayOutputStream;
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
-import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
-
-public class HomeActivity extends AppCompatActivity  implements View.OnClickListener {
-
-    private SharedPreferences sharedpreferences;
-    private RequestQueue queue;
-
-    private Button reportMissingButton, reportFoundButton, findMatchButton;
-
-    private ImageView targetImage;
-    private Button uploadButton;
-    private String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE};
-
+    private Button reportButton, findMatchButton, viewImagesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,39 +21,31 @@ public class HomeActivity extends AppCompatActivity  implements View.OnClickList
         setContentView(R.layout.activity_home);
 
 
-        reportMissingButton = findViewById(R.id.report_missing);
-        reportFoundButton = findViewById(R.id.report_found);
+        reportButton = findViewById(R.id.report);
         findMatchButton = findViewById(R.id.find_match);
+        viewImagesButton = findViewById(R.id.view_button);
 
-        reportMissingButton.setOnClickListener(this);
-        reportFoundButton.setOnClickListener(this);
+        reportButton.setOnClickListener(this);
         findMatchButton.setOnClickListener(this);
-
-
-        queue = Volley.newRequestQueue(this);
-        sharedpreferences = getSharedPreferences("Session", Context.MODE_PRIVATE);
+        viewImagesButton.setOnClickListener(this);
 
     }
-
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.report_found:
-                Intent intent_found = new Intent(HomeActivity.this, ReportActivity.class);
-                intent_found.putExtra("child_status", "found");
-                startActivity(intent_found);
-                break;
-
-            case R.id.report_missing:
-                Intent intent_missing = new Intent(HomeActivity.this, ReportActivity.class);
-                intent_missing.putExtra("child_status","missing");
-                startActivity(intent_missing);
+            case R.id.report:
+                Intent report = new Intent(HomeActivity.this, ReportActivity.class);
+                startActivity(report);
                 break;
             case R.id.find_match:
                 Intent intent2 = new Intent(HomeActivity.this, MatchActivity.class);
                 startActivity(intent2);
+                break;
+            case R.id.view_button:
+                Intent intent3 = new Intent(HomeActivity.this, ImageDisplayActivity.class);
+                startActivity(intent3);
                 break;
         }
     }

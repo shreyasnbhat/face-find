@@ -34,7 +34,7 @@ def increment_count(user_id,child_status):
     user_count = db_session.query(UserCount).filter_by(id=user_id).first()
     if user_count:
         count = 0
-        if(child_status=="missing"):
+        if(child_status=="Missing"):
             count = user_count.missing_count
         else:
             count = user_count.found_count
@@ -44,7 +44,7 @@ def increment_count(user_id,child_status):
             return 5, False
         else:
             count += 1
-            if(child_status=="missing"):
+            if(child_status=="Missing"):
                 setattr(user_count,'missing_count',count)
             else:
                 setattr(user_count,'found_count',count)
@@ -53,7 +53,7 @@ def increment_count(user_id,child_status):
             print("temp_user_count")
             return count, True
     else:
-        if child_status=="missing":
+        if child_status=="Missing":
             db_session.add(UserCount(id=user_id, missing_count=1, found_count=0))
         else:
             db_session.add(UserCount(id=user_id, missing_count=0, found_count=1))
@@ -120,23 +120,6 @@ def authenticate():
 
 
 @login_required
-@app.route('/api/test', methods=['POST'])
-def test():
-    db_session = DBSession()
-
-    user_id = request.form['user-id']
-    password = request.form['password'].encode('utf-8')
-
-    print(type(password))
-
-    if check_auth(user_id, password) is 'success':
-        user = db_session.query(User).filter_by(id=user_id).first()
-        return str(user.age)
-    else:
-        return "not authenticated"
-
-
-@login_required
 @app.route('/api/users/upload', methods=['POST'])
 def upload():
     user_id = request.form['user-id']
@@ -163,7 +146,7 @@ def upload():
             encodings = get_encoding(path)
             encoding_str = json.dumps(list(encodings))
             if encodings is not False:
-                if child_status=="missing":
+                if child_status=="Missing":
                     db_session.add(MissingImageEncoding(id=user_id,encoding=encoding_str,encoding_count=count))
                     db_session.add(ImageDetailsMissing(id = user_id, encoding_count=count, name=name, age=age, gender = gender, location=location))
                 else:
@@ -185,33 +168,52 @@ def upload():
 def find_matches():
     user_id = request.form['user-id']
     password = request.form['password'].encode('utf-8')
+    request_type = request.form['request-type']
     db_session = DBSession()
 
-    print(user_id, password)
-
     if check_auth(user_id, password) is 'success':
-        known_users = [i[0] for i in db_session.query(MissingImageEncoding.id).filter(MissingImageEncoding.id != user_id).distinct()]
-        print(known_users)
+        if request_type == 'Missing':
+            known_users = [i[0] for i in db_session.query(MissingImageEncoding.id).filter(MissingImageEncoding.id != user_id).distinct()]
+        elif request_type == 'Found':
+            known_users = [i[0] for i in db_session.query(FoundImageEncoding.id).filter(FoundImageEncoding.id != user_id).distinct()]
+
         known_encodings = []
         known_labels = []
+        print(known_users)
+
         for encoding_user in known_users:
             count = db_session.query(UserCount).filter_by(id=encoding_user).one()
-            print(count.missing_count)
-            for i in range(count.missing_count):
-                encoding_user_by_count = db_session.query(MissingImageEncoding).filter_by(id=encoding_user,encoding_count=i + 1).first()
-                print(encoding_user_by_count)
-                known_encodings.append(json.loads(encoding_user_by_count.encoding))
-                known_labels.append(encoding_user + '_m' + str(i + 1))
+            print( request_type == 'Missing' ,  request_type == 'Found')
+            if request_type == 'Missing':
+                for i in range(count.missing_count):
+                    encoding_user_by_count = db_session.query(MissingImageEncoding).filter_by(id=encoding_user,encoding_count=i + 1).first()
+                    print(encoding_user_by_count)
+                    known_encodings.append(json.loads(encoding_user_by_count.encoding))
+                    known_labels.append(encoding_user + '_M' + str(i + 1))
+            elif request_type == 'Found':
+                for i in range(count.found_count):
+                    encoding_user_by_count = db_session.query(FoundImageEncoding).filter_by(id=encoding_user,encoding_count=i + 1).first()
+                    print(encoding_user_by_count)
+                    known_encodings.append(json.loads(encoding_user_by_count.encoding))
+                    known_labels.append(encoding_user + '_F' + str(i + 1))
 
         current_user = db_session.query(UserCount).filter_by(id=user_id).first()
         result = set()
 
-        for i in range(current_user.found_count):
-            b = get_encoding('./api/static/img/' + user_id + "_f" + str(i + 1) + ".jpg")
-            face_distances = face_recognition.face_distance(np.array(known_encodings), b)
-            for i in range(len(face_distances)):
-                if face_distances[i] < 0.6:
-                    result.add((known_labels[i], str(face_distances[i])))
+        if request_type == 'Missing':
+            for i in range(current_user.found_count):
+                b = get_encoding('./api/static/img/' + user_id + "_F" + str(i + 1) + ".jpg")
+                face_distances = face_recognition.face_distance(np.array(known_encodings), b)
+                for i in range(len(face_distances)):
+                    if face_distances[i] < 0.6:
+                        result.add((known_labels[i], str(face_distances[i])))
+        if request_type == 'Found':
+            for i in range(current_user.missing_count):
+                b = get_encoding('./api/static/img/' + user_id + "_M" + str(i + 1) + ".jpg")
+                face_distances = face_recognition.face_distance(np.array(known_encodings), b)
+                for i in range(len(face_distances)):
+                    if face_distances[i] < 0.6:
+                        result.add((known_labels[i], str(face_distances[i])))
 
         final_image_labels = set([label + '.jpg' for label, _ in sorted(result, key=itemgetter(1))])
         print(",".join(list(final_image_labels)))

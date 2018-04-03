@@ -16,14 +16,13 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <ProgressBar
             android:id="@+id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            />
+            android:layout_gravity="center" />
 
 
     </FrameLayout>
@@ -32,10 +31,22 @@
         android:id="@+id/process"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/file_select"
         android:layout_margin="8dp"
         android:background="@drawable/button_background"
         android:padding="8dp"
         android:text="Process"
         android:textColor="@color/white" />
+
+    <Spinner
+        android:id="@+id/file_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/target_image"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/edit_text_background"
+        android:padding="8dp" />
 
 </RelativeLayout>

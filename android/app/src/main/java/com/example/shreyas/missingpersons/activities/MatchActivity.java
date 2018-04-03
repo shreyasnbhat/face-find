@@ -9,8 +9,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MatchActivity extends AppCompatActivity implements View.OnClickListener {
+public class MatchActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private RecyclerView rv;
     private RequestQueue queue;
@@ -38,6 +41,8 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     private SharedPreferences sharedpreferences;
     private Button processButton;
     private ProgressBar progressBar;
+    private Spinner spinner;
+    private String requestType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +57,25 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+
         rv = findViewById(R.id.rv);
         processButton = findViewById(R.id.process);
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.INVISIBLE);
+
+        spinner = findViewById(R.id.file_select);
+
+        ArrayList<String> spinnerItems = new ArrayList<>();
+        spinnerItems.add("Found");
+        spinnerItems.add("Missing");
+
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_item,
+                spinnerItems);
+        spinner.setAdapter(spinnerArrayAdapter);
+        spinner.setSelection(0);
+        spinner.setOnItemSelectedListener(this);
+
 
         processButton.setOnClickListener(this);
 
@@ -66,7 +86,6 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         rv.setVisibility(View.INVISIBLE);
 
         queue = Volley.newRequestQueue(this);
-
 
     }
 
@@ -103,7 +122,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                         String password = sharedpreferences.getString("password", "qwerty");
                         data.put("user-id", userId);
                         data.put("password", password);
-                        data.put("filename", "adi_m2.jpg");
+                        data.put("request-type", requestType);
                         return data;
                     }
                 };
@@ -116,5 +135,15 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 queue.add(stringRequest);
                 break;
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        requestType = (String) parent.getItemAtPosition(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        requestType = (String) parent.getItemAtPosition(0);
     }
 }

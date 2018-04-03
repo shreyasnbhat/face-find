@@ -12,9 +12,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.EditText;
 
@@ -31,22 +35,23 @@ import com.example.shreyas.missingpersons.response.ResponseErrorListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReportActivity extends AppCompatActivity  implements View.OnClickListener {
-
+public class ReportActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
 
     private SharedPreferences sharedpreferences;
     private RequestQueue queue;
     private ImageView targetImage;
     private FloatingActionButton addImageButton;
-    private Button postImageButton,listImageButton;
+    private Button postImageButton, listImageButton;
     private Bitmap imageBitmap;
     private String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE};
-    private EditText nametext, agetext, gentext, loctext;
+    private EditText nameText, ageText, genderText, locationText;
     private String childStatus;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +63,32 @@ public class ReportActivity extends AppCompatActivity  implements View.OnClickLi
         addImageButton = findViewById(R.id.add_image);
         targetImage = findViewById(R.id.target_image);
         postImageButton = findViewById(R.id.upload_image);
-        listImageButton = findViewById(R.id.list_image);
-        nametext = findViewById(R.id.edit_name);
-        agetext = findViewById(R.id.edit_age);
-        gentext = findViewById(R.id.edit_gender);
-        loctext = findViewById(R.id.edit_location);
-        childStatus = getIntent().getStringExtra("child_status");
+        nameText = findViewById(R.id.edit_name);
+        ageText = findViewById(R.id.edit_age);
+        genderText = findViewById(R.id.edit_gender);
+        locationText = findViewById(R.id.edit_location);
+        spinner = findViewById(R.id.child_status_match);
 
+        // add back arrow to toolbar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+
+        ArrayList<String> spinnerItems = new ArrayList<>();
+        spinnerItems.add("Found");
+        spinnerItems.add("Missing");
+
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_item,
+                spinnerItems);
+        spinner.setAdapter(spinnerArrayAdapter);
+        spinner.setSelection(0);
+        spinner.setOnItemSelectedListener(this);
 
         addImageButton.setOnClickListener(this);
         postImageButton.setOnClickListener(this);
-        listImageButton.setOnClickListener(this);
-
 
         queue = Volley.newRequestQueue(this);
         sharedpreferences = getSharedPreferences("Session", Context.MODE_PRIVATE);
@@ -91,11 +110,9 @@ public class ReportActivity extends AppCompatActivity  implements View.OnClickLi
 
             case R.id.upload_image:
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                if(isEmpty(nametext) || isEmpty(agetext) || isEmpty(gentext) || isEmpty(loctext)){
+                if (isEmpty(nameText) || isEmpty(ageText) || isEmpty(genderText) || isEmpty(locationText)) {
                     Toast.makeText(this, "Please fill all the details.", Toast.LENGTH_SHORT).show();
-                }
-
-                else if (imageBitmap != null) {
+                } else if (imageBitmap != null) {
                     imageBitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);
                     byte[] imageBytes = baos.toByteArray();
                     final String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
@@ -116,11 +133,11 @@ public class ReportActivity extends AppCompatActivity  implements View.OnClickLi
                             data.put("user-id", userId);
                             data.put("password", password);
                             data.put("image", imageString);
-                            data.put("name", nametext.getText().toString());
-                            data.put("age", agetext.getText().toString());
-                            data.put("gender", gentext.getText().toString());
-                            data.put("location", loctext.getText().toString());
-                            data.put("child_status",childStatus);
+                            data.put("name", nameText.getText().toString());
+                            data.put("age", ageText.getText().toString());
+                            data.put("gender", genderText.getText().toString());
+                            data.put("location", locationText.getText().toString());
+                            data.put("child_status", childStatus);
 
                             return data;
                         }
@@ -134,12 +151,6 @@ public class ReportActivity extends AppCompatActivity  implements View.OnClickLi
                 } else {
                     Toast.makeText(this, "No image was selected!", Toast.LENGTH_SHORT).show();
                 }
-                break;
-            case R.id.list_image:
-                nametext.setText("view");
-                Intent intent1 = new Intent(ReportActivity.this, ImageDisplayActivity.class);
-                startActivity(intent1);
-
                 break;
         }
     }
@@ -158,6 +169,16 @@ public class ReportActivity extends AppCompatActivity  implements View.OnClickLi
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        childStatus = (String) parent.getItemAtPosition(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        childStatus = (String) parent.getItemAtPosition(0);
     }
 
     private boolean isEmpty(EditText etText) {

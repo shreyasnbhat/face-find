@@ -10,6 +10,13 @@ public class ImageItem {
     private String imageId;
     private String imageDescription;
 
+    public ImageItem(String imageUrl, String imageId, String imageDescription) {
+        this.imageUrl = imageUrl;
+        this.imageId = imageId;
+        this.imageDescription = imageDescription;
+
+    }
+
     public ImageItem(String imageUrl, String imageId) {
         this.imageUrl = imageUrl;
         this.imageId = imageId;
