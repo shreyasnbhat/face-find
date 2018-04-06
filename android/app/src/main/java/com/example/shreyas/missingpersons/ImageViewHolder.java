@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -28,6 +29,12 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
         imageIdTextView = itemView.findViewById(R.id.image_id);
         imageView = itemView.findViewById(R.id.image);
         imageDescriptionTextView = itemView.findViewById(R.id.image_desc);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context,imageItem.toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void setImageItem(ImageItem imageItem) {

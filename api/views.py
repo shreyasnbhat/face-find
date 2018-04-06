@@ -120,6 +120,31 @@ def authenticate():
 
 
 @login_required
+@app.route('/api/images',methods=['POST'])
+def get_images():
+    user_id = request.form['user-id']
+    password = request.form['password'].encode('utf-8')
+
+    if check_auth(user_id,password) is 'success':
+        db_session = DBSession()
+        images_missing = db_session.query(ImageDetailsMissing).filter_by(id=user_id).all()
+        images_found = db_session.query(ImageDetailsFound).filter_by(id=user_id).all()
+
+        response = ''
+        response = response + str(len(images_missing)) + '|' + str(len(images_found)) + ','
+        for i in images_missing:
+            response = response + str(i.name) + '|' + str(i.gender) + '|' + str(i.age) + '|' + i.location + ','
+
+        for i in images_found:
+            response = response + str(i.name) + '|' + str(i.gender) + '|' + str(i.age) + '|' + i.location + ','
+        db_session.close()
+        print(response)
+        return response
+    else:
+        return "Auth Failed"
+
+
+@login_required
 @app.route('/api/users/upload', methods=['POST'])
 def upload():
     user_id = request.form['user-id']

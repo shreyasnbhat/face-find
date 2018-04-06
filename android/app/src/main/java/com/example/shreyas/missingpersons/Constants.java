@@ -16,4 +16,5 @@ public class Constants {
     public static String UPLOAD_IMAGE = API + "users/upload";
     public static String UPLOAD_FOUND_IMAGE = API + "users/upload/found";
     public static String MATCH = API + "match";
+    public static String GET_IMAGES = API + "images";
 }
