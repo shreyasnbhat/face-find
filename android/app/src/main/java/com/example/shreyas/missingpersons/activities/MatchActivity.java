@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -102,18 +103,23 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                             @Override
                             public void onResponse(String response) {
                                 String[] files = response.split(",", -2);
-                                imageList.clear();
-                                for (int i = 0; i < files.length; i++) {
-                                    Log.e("TAG", files[i]);
-                                    ImageItem imageItem = new ImageItem(Constants.IMAGE_REQUEST + '/' + files[i], (i + 1) + "");
-                                    String[] userIdOfImageMatches = files[i].split("_", -2);
-                                    imageItem.setImageDescription(userIdOfImageMatches[0]);
-                                    imageList.add(imageItem);
+                                Log.e("Response",response);
+                                if (!files[0].isEmpty()) {
+                                    imageList.clear();
+                                    for (int i = 0; i < files.length; i++) {
+                                        Log.e("TAG", files[i]);
+                                        String[] userData = files[i].split("\\|", -2);
+                                        String[] userIdOfImageMatches = userData[0].split("_", -2);
+                                        ImageItem imageItem = new ImageItem(Constants.IMAGE_REQUEST + '/' + userData[0], (i + 1) + "", userIdOfImageMatches[0], userData[1], userData[2], userData[3], userData[4], userData[5]);
+                                        imageList.add(imageItem);
+                                    }
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                    rv.setVisibility(View.VISIBLE);
+                                    rv.getRecycledViewPool().clear();
+                                    adapter.notifyDataSetChanged();
+                                } else {
+                                    Toast.makeText(MatchActivity.this,"No Match!",Toast.LENGTH_SHORT).show();
                                 }
-                                progressBar.setVisibility(View.INVISIBLE);
-                                rv.setVisibility(View.VISIBLE);
-                                rv.getRecycledViewPool().clear();
-                                adapter.notifyDataSetChanged();
                             }
                         }, new ResponseErrorListener()) {
                     protected Map<String, String> getParams() {

@@ -233,7 +233,7 @@ def find_matches():
                 for i in range(len(face_distances)):
                     if face_distances[i] < 0.6:
                         result.add((known_labels[i], str(face_distances[i])))
-        if request_type == 'Found':
+        elif request_type == 'Found':
             for i in range(current_user.missing_count):
                 b = get_encoding('./api/static/img/' + user_id + "_M" + str(i + 1) + ".jpg")
                 face_distances = face_recognition.face_distance(np.array(known_encodings), b)
@@ -241,9 +241,45 @@ def find_matches():
                     if face_distances[i] < 0.6:
                         result.add((known_labels[i], str(face_distances[i])))
 
-        final_image_labels = set([label + '.jpg' for label, _ in sorted(result, key=itemgetter(1))])
+        image_data_match = []
+        for i in result:
+            img_id_match = i[0].split('_')[0]
+
+            img_enc_match = None
+            img_details_match = None
+            if request_type == 'Found':
+                img_enc_match = i[0].split('F')[1]
+                img_details_match = db_session.query(ImageDetailsFound).filter_by(id=img_id_match,encoding_count = img_enc_match).one()
+            elif request_type == 'Missing':
+                img_enc_match = i[0].split('M')[1]
+                img_details_match = db_session.query(ImageDetailsMissing).filter_by(id=img_id_match,encoding_count = img_enc_match).one()
+
+            if (request_type[0] == 'F' or request_type[0] == 'M'):
+                image_data_match.append({'name':img_details_match.name,
+                                         'gender':img_details_match.gender,
+                                         'age':img_details_match.age,
+                                         'latitude':img_details_match.latitude,
+                                         'longitude':img_details_match.longitude})
+
+        result = list(result)
+        for i in range(len(result)):
+            result[i]+=(image_data_match[i],)
+
+        print(result)
+
+
+        final_image_labels = set([generate_result(label,data) for label, _ ,data in sorted(result, key=itemgetter(1))])
         print(",".join(list(final_image_labels)))
         return ",".join(list(final_image_labels))
 
     else:
         return "Authentication Failed"
+
+
+def generate_result(label,data):
+    return label + '.jpg' + '|' + \
+            data['name'] + '|' +\
+            data['gender'] + '|' +\
+            str(data['age']) + '|' +\
+            data['latitude'] + '|' +\
+            data['longitude']
