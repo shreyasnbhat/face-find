@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationListener;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -48,10 +51,13 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     private FloatingActionButton addImageButton;
     private Button postImageButton, listImageButton;
     private Bitmap imageBitmap;
-    private String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE};
+    private String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION};
     private EditText nameText, ageText, genderText, locationText;
     private String childStatus;
     private Spinner spinner;
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
         requestAllPermissions();
 
+        locationManager = (LocationManager) ReportActivity.this.getSystemService(Context.LOCATION_SERVICE);
         addImageButton = findViewById(R.id.add_image);
         targetImage = findViewById(R.id.target_image);
         postImageButton = findViewById(R.id.upload_image);
@@ -68,6 +75,31 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         genderText = findViewById(R.id.edit_gender);
         locationText = findViewById(R.id.edit_location);
         spinner = findViewById(R.id.child_status_match);
+
+        Location location = null;
+        if (PermissionManager.checkPermission(ReportActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) &&
+                PermissionManager.checkPermission(ReportActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            locationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER,
+                    0,
+                    0, locationListener);
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(location!=null)
+                locationText.setText(location.getLatitude()+","+location.getLongitude());
+            else{
+                locationManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER,
+                        0,
+                        0, locationListener);
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if(location!=null)
+                    locationText.setText(location.getLatitude()+","+location.getLongitude());
+                else
+                    locationText.setText("Location Coordinates");
+            }
+        }
+        else{
+            locationText.setText("Location Coordinates");
+        }
+
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null) {
@@ -95,6 +127,28 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    LocationListener locationListener=new LocationListener() {
+        @Override
+        public void onLocationChanged(android.location.Location location) {
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+
     private void requestAllPermissions() {
         PermissionManager.grantAllPermissions(ReportActivity.this, permissionList);
     }
@@ -117,6 +171,8 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                     byte[] imageBytes = baos.toByteArray();
                     final String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 
+                    Toast.makeText(this,locationText.getText().toString().split(",")[0]+","+ locationText.getText().toString().split(",")[1], Toast.LENGTH_SHORT).show();
+
                     StringRequest request = new StringRequest(Request.Method.POST, Constants.UPLOAD_IMAGE,
                             new Response.Listener<String>() {
                                 @Override
@@ -136,7 +192,8 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                             data.put("name", nameText.getText().toString());
                             data.put("age", ageText.getText().toString());
                             data.put("gender", genderText.getText().toString());
-                            data.put("location", locationText.getText().toString());
+                            data.put("latitude", locationText.getText().toString().split(",")[0]);
+                            data.put("longitude", locationText.getText().toString().split(",")[1]);
                             data.put("child_status", childStatus);
 
                             return data;

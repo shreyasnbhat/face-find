@@ -37,7 +37,8 @@ class ImageDetailsFound(Base):
     name = Column(String(80), nullable=False)
     gender = Column(String(20))
     age = Column(Integer)
-    location = Column(String(80))
+    latitude = Column(String(80))
+    longitude = Column(String(80))
 
 class ImageDetailsMissing(Base):
     __tablename__ = 'image_details_missing'
@@ -47,7 +48,8 @@ class ImageDetailsMissing(Base):
     name = Column(String(80), nullable=False)
     gender = Column(String(20))
     age = Column(Integer)
-    location = Column(String(80))
+    latitude = Column(String(80))
+    longitude = Column(String(80))
 
 class UserCount(Base):
     __tablename__='usercount'
