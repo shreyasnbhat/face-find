@@ -133,10 +133,10 @@ def get_images():
         response = ''
         response = response + str(len(images_missing)) + '|' + str(len(images_found)) + ','
         for i in images_missing:
-            response = response + str(i.name) + '|' + str(i.gender) + '|' + str(i.age) + '|' + i.location + ','
+            response = response + str(i.name) + '|' + str(i.gender) + '|' + str(i.age) + '|' + i.latitude+  '|' + i.longitude + ','
 
         for i in images_found:
-            response = response + str(i.name) + '|' + str(i.gender) + '|' + str(i.age) + '|' + i.location + ','
+            response = response + str(i.name) + '|' + str(i.gender) + '|' + str(i.age) + '|' + i.latitude+  '|' + i.longitude + ','
         db_session.close()
         print(response)
         return response
@@ -151,7 +151,8 @@ def upload():
     password = request.form['password'].encode('utf-8')
     name = request.form['name']
     age = request.form['age']
-    location = request.form['location']
+    latitude = request.form['latitude']
+    longitude = request.form['longitude']
     gender = request.form['gender']
     child_status = request.form['child_status']
 
@@ -173,10 +174,10 @@ def upload():
             if encodings is not False:
                 if child_status=="Missing":
                     db_session.add(MissingImageEncoding(id=user_id,encoding=encoding_str,encoding_count=count))
-                    db_session.add(ImageDetailsMissing(id = user_id, encoding_count=count, name=name, age=age, gender = gender, location=location))
+                    db_session.add(ImageDetailsMissing(id = user_id, encoding_count=count, name=name, age=age, gender = gender, latitude=latitude, longitude =longitude))
                 else:
                     db_session.add(FoundImageEncoding(id=user_id,encoding=encoding_str,encoding_count=count))
-                    db_session.add(ImageDetailsFound(id = user_id, encoding_count = count, name=name, age=age, gender = gender, location=location))
+                    db_session.add(ImageDetailsFound(id = user_id, encoding_count = count, name=name, age=age, gender = gender, latitude=latitude, longitude =longitude))
                 db_session.commit()
                 db_session.close()
                 return "Upload Successful"

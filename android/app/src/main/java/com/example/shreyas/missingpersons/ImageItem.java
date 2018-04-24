@@ -13,16 +13,18 @@ public class ImageItem {
     private String id;
     private String gender;
     private String age;
-    private String location;
+    private String latitude;
+    private String longitude;
 
-    public ImageItem(String imageUrl, String imageId, String imageDescription, String id, String gender, String age, String location) {
+    public ImageItem(String imageUrl, String imageId, String imageDescription, String id, String gender, String age, String latitude, String longitude) {
         this.imageUrl = imageUrl;
         this.imageId = imageId;
         this.imageDescription = imageDescription;
         this.id = id;
         this.gender = gender;
         this.age = age;
-        this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public ImageItem(String imageUrl, String imageId) {
@@ -79,21 +81,20 @@ public class ImageItem {
         this.age = age;
     }
 
-    public String getLocation() {
-        return location;
-    }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     @Override
     public String toString() {
-        return "ImageItem{" +
-                "id='" + id + '\'' +
-                ", gender='" + gender + '\'' +
-                ", age='" + age + '\'' +
-                ", location='" + location + '\'' +
-                '}';
+        return "Name:     \t" + id + '\n' +
+                "Gender:  \t\t" + gender + '\n' +
+                "Age:     \t\t\t" + age + '\n' +
+                "Latitude:\t\t" + latitude + '\n'+
+                "Longitude:" + longitude + '\n';
+    }
+    public String getLatitude(){
+        return latitude;
+    }
+    public String getLongitude(){
+        return longitude;
     }
 }

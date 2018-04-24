@@ -87,20 +87,21 @@ public class ImageDisplayActivity extends AppCompatActivity {
                             int i = 1;
                             for (; i <= imageCountMissing; i++) {
                                 String[] userData = data[i].split("\\|", -2);
+                                Log.e("URL", Integer.toString(userData.length));
                                 String imageUrl = Constants.IMAGE_REQUEST + "/" + userId + "_" + "M" + i + ".jpg";
                                 Log.e("URL", imageUrl);
-                                ImageItem imageData = new ImageItem(imageUrl, i + "", userId, userData[0], userData[1], userData[2], userData[3]);
+                                ImageItem imageData = new ImageItem(imageUrl, i + "", userId, userData[0], userData[1], userData[2], userData[3], userData[4]);
                                 imageList.add(imageData);
                             }
 
-                            imageList.add(new ImageItem("http://google.com", ""));
+//                            imageList.add(new ImageItem("http://google.com", ""));
 
                             for (i = imageCountMissing + 1; i <= imageCountMissing + imageCountFound; i++) {
                                 Log.e("TAGMISS", data[i] + " " + i);
                                 String[] userData = data[i].split("\\|", -2);
                                 String imageUrl = Constants.IMAGE_REQUEST + "/" + userId + "_" + "F" + (i - imageCountMissing) + ".jpg";
                                 Log.e("URLMISS", imageUrl);
-                                ImageItem imageData = new ImageItem(imageUrl, (i - imageCountMissing) + "", userId, userData[0], userData[1], userData[2], userData[3]);
+                                ImageItem imageData = new ImageItem(imageUrl, (i - imageCountMissing) + "", userId, userData[0], userData[1], userData[2], userData[3], userData[4]);
                                 imageList.add(imageData);
                             }
 
