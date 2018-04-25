@@ -133,10 +133,10 @@ def get_images():
         response = ''
         response = response + str(len(images_missing)) + '|' + str(len(images_found)) + ','
         for i in images_missing:
-            response = response + str(i.name) + '|' + str(i.gender) + '|' + str(i.age) + '|' + i.latitude+  '|' + i.longitude + ','
+            response = response + str(i.name) + '|' + str(i.gender) + '|' + str(i.age) + '|' + i.latitude+  '|' + i.longitude + '|' + i.phoneNo +','
 
         for i in images_found:
-            response = response + str(i.name) + '|' + str(i.gender) + '|' + str(i.age) + '|' + i.latitude+  '|' + i.longitude + ','
+            response = response + str(i.name) + '|' + str(i.gender) + '|' + str(i.age) + '|' + i.latitude+  '|' + i.longitude + '|' + i.phoneNo +','
         db_session.close()
         print(response)
         return response
@@ -154,6 +154,7 @@ def upload():
     latitude = request.form['latitude']
     longitude = request.form['longitude']
     gender = request.form['gender']
+    phoneNo = request.form['phone']
     child_status = request.form['child_status']
 
 
@@ -174,10 +175,10 @@ def upload():
             if encodings is not False:
                 if child_status=="Missing":
                     db_session.add(MissingImageEncoding(id=user_id,encoding=encoding_str,encoding_count=count))
-                    db_session.add(ImageDetailsMissing(id = user_id, encoding_count=count, name=name, age=age, gender = gender, latitude=latitude, longitude =longitude))
+                    db_session.add(ImageDetailsMissing(id = user_id, encoding_count=count, name=name, age=age, gender = gender, latitude=latitude, longitude =longitude, phoneNo=phoneNo))
                 else:
                     db_session.add(FoundImageEncoding(id=user_id,encoding=encoding_str,encoding_count=count))
-                    db_session.add(ImageDetailsFound(id = user_id, encoding_count = count, name=name, age=age, gender = gender, latitude=latitude, longitude =longitude))
+                    db_session.add(ImageDetailsFound(id = user_id, encoding_count = count, name=name, age=age, gender = gender, latitude=latitude, longitude =longitude, phoneNo=phoneNo))
                 db_session.commit()
                 db_session.close()
                 return "Upload Successful"
@@ -259,7 +260,8 @@ def find_matches():
                                          'gender':img_details_match.gender,
                                          'age':img_details_match.age,
                                          'latitude':img_details_match.latitude,
-                                         'longitude':img_details_match.longitude})
+                                         'longitude':img_details_match.longitude,
+                                         'phone':img_details_match.phoneNo })
 
         result = list(result)
         for i in range(len(result)):
@@ -282,4 +284,5 @@ def generate_result(label,data):
             data['gender'] + '|' +\
             str(data['age']) + '|' +\
             data['latitude'] + '|' +\
-            data['longitude']
+            data['longitude'] + '|' +\
+            data['phone']

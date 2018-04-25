@@ -15,8 +15,9 @@ public class ImageItem {
     private String age;
     private String latitude;
     private String longitude;
+    private String phone;
 
-    public ImageItem(String imageUrl, String imageId, String imageDescription, String id, String gender, String age, String latitude, String longitude) {
+    public ImageItem(String imageUrl, String imageId, String imageDescription, String id, String gender, String age, String latitude, String longitude, String phone) {
         this.imageUrl = imageUrl;
         this.imageId = imageId;
         this.imageDescription = imageDescription;
@@ -25,6 +26,7 @@ public class ImageItem {
         this.age = age;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.phone = phone;
     }
 
     public ImageItem(String imageUrl, String imageId) {
@@ -89,12 +91,17 @@ public class ImageItem {
                 "Gender:  \t\t" + gender + '\n' +
                 "Age:     \t\t\t" + age + '\n' +
                 "Latitude:\t\t" + latitude + '\n'+
-                "Longitude:" + longitude + '\n';
+                "Longitude:" + longitude + '\n'+
+                "Contact No:\t"+ phone + '\n';
     }
     public String getLatitude(){
         return latitude;
     }
     public String getLongitude(){
         return longitude;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.shreyas.missingpersons.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +17,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.shreyas.missingpersons.Constants;
-import com.example.shreyas.missingpersons.ImageAdapter;
-import com.example.shreyas.missingpersons.ImageItem;
-import com.example.shreyas.missingpersons.R;
+import com.example.shreyas.missingpersons.*;
+import com.example.shreyas.missingpersons.PermissionManager;
 import com.example.shreyas.missingpersons.response.ResponseErrorListener;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
     private ImageAdapter adapter;
     private SharedPreferences sharedpreferences;
     private ProgressBar progressBar;
-
+    private String[] permissionList = {Manifest.permission.CALL_PHONE};
 
     private RequestQueue queue;
 
@@ -41,6 +40,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_display);
+        requestAllPermissions();
 
         sharedpreferences = getSharedPreferences("Session", Context.MODE_PRIVATE);
 
@@ -64,6 +64,12 @@ public class ImageDisplayActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         request();
     }
+
+    private void requestAllPermissions() {
+        PermissionManager.grantAllPermissions(ImageDisplayActivity.this, permissionList);
+    }
+
+
 
     public void request() {
         rv.setVisibility(View.INVISIBLE);
@@ -90,7 +96,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
                                 Log.e("URL", Integer.toString(userData.length));
                                 String imageUrl = Constants.IMAGE_REQUEST + "/" + userId + "_" + "M" + i + ".jpg";
                                 Log.e("URL", imageUrl);
-                                ImageItem imageData = new ImageItem(imageUrl, i + "", userId, userData[0], userData[1], userData[2], userData[3], userData[4]);
+                                ImageItem imageData = new ImageItem(imageUrl, i + "", userId, userData[0], userData[1], userData[2], userData[3], userData[4], userData[5]);
                                 imageList.add(imageData);
                             }
 
@@ -101,7 +107,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
                                 String[] userData = data[i].split("\\|", -2);
                                 String imageUrl = Constants.IMAGE_REQUEST + "/" + userId + "_" + "F" + (i - imageCountMissing) + ".jpg";
                                 Log.e("URLMISS", imageUrl);
-                                ImageItem imageData = new ImageItem(imageUrl, (i - imageCountMissing) + "", userId, userData[0], userData[1], userData[2], userData[3], userData[4]);
+                                ImageItem imageData = new ImageItem(imageUrl, (i - imageCountMissing) + "", userId, userData[0], userData[1], userData[2], userData[3], userData[4], userData[5]);
                                 imageList.add(imageData);
                             }
 

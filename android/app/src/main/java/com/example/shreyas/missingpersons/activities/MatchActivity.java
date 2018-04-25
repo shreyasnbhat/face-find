@@ -1,5 +1,6 @@
 package com.example.shreyas.missingpersons.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,10 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.shreyas.missingpersons.Constants;
-import com.example.shreyas.missingpersons.ImageAdapter;
-import com.example.shreyas.missingpersons.ImageItem;
-import com.example.shreyas.missingpersons.R;
+import com.example.shreyas.missingpersons.*;
 import com.example.shreyas.missingpersons.response.ResponseErrorListener;
 
 import java.util.ArrayList;
@@ -44,14 +42,17 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     private ProgressBar progressBar;
     private Spinner spinner;
     private String requestType;
+    private String[] permissionList = {Manifest.permission.CALL_PHONE};
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
+        requestAllPermissions();
 
         sharedpreferences = getSharedPreferences("Session", Context.MODE_PRIVATE);
-
         // add back arrow to toolbar
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -90,6 +91,10 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    private void requestAllPermissions() {
+        com.example.shreyas.missingpersons.PermissionManager.grantAllPermissions(MatchActivity.this, permissionList);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -110,7 +115,8 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                                         Log.e("TAG", files[i]);
                                         String[] userData = files[i].split("\\|", -2);
                                         String[] userIdOfImageMatches = userData[0].split("_", -2);
-                                        ImageItem imageItem = new ImageItem(Constants.IMAGE_REQUEST + '/' + userData[0], (i + 1) + "", userIdOfImageMatches[0], userData[1], userData[2], userData[3], userData[4], userData[5]);
+
+                                        ImageItem imageItem = new ImageItem(Constants.IMAGE_REQUEST + '/' + userData[0], (i + 1) + "", userIdOfImageMatches[0], userData[1], userData[2], userData[3], userData[4], userData[5], userData[6]);
                                         imageList.add(imageItem);
                                     }
                                     progressBar.setVisibility(View.INVISIBLE);

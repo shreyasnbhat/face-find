@@ -1,10 +1,14 @@
 package com.example.shreyas.missingpersons;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +31,7 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
     public ImageView imageView;
     public TextView imageDescriptionTextView;
 
+
     private ImageItem imageItem;
 
     public ImageViewHolder(View itemView, final Context context) {
@@ -40,12 +45,12 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                 alertDialogBuilder.setMessage(imageItem.toString());
-                alertDialogBuilder.setPositiveButton("OK",
+                alertDialogBuilder.setNeutralButton("OK",
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface arg0, int arg1) {}
                             });
-                alertDialogBuilder.setNeutralButton("Show on Map",
+                alertDialogBuilder.setNegativeButton("Show on Map",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
@@ -55,6 +60,21 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
                                 context.startActivity(intent);
                             }
                         });
+                alertDialogBuilder.setPositiveButton("Call",
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+                        callIntent.setData(Uri.parse("tel:"+imageItem.getPhone()));
+
+                        if (ActivityCompat.checkSelfPermission(context,
+                                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        context.startActivity(callIntent);
+                    }
+
+                });
                 alertDialogBuilder.setTitle("Image Details");
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
@@ -62,6 +82,7 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
             }
         });
     }
+
 
     public void setImageItem(ImageItem imageItem) {
         this.imageItem = imageItem;

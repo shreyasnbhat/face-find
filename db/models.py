@@ -39,6 +39,7 @@ class ImageDetailsFound(Base):
     age = Column(Integer)
     latitude = Column(String(80))
     longitude = Column(String(80))
+    phoneNo = Column(String(20))
 
 class ImageDetailsMissing(Base):
     __tablename__ = 'image_details_missing'
@@ -50,6 +51,7 @@ class ImageDetailsMissing(Base):
     age = Column(Integer)
     latitude = Column(String(80))
     longitude = Column(String(80))
+    phoneNo = Column(String(20))
 
 class UserCount(Base):
     __tablename__='usercount'

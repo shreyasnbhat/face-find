@@ -54,7 +54,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     private String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION};
-    private EditText nameText, ageText, genderText, locationText;
+    private EditText nameText, ageText, genderText, locationText, phoneText;
     private String childStatus;
     private Spinner spinner;
     private LocationManager locationManager;
@@ -74,6 +74,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         ageText = findViewById(R.id.edit_age);
         genderText = findViewById(R.id.edit_gender);
         locationText = findViewById(R.id.edit_location);
+        phoneText = findViewById(R.id.edit_phone);
         spinner = findViewById(R.id.child_status_match);
 
         Location location = null;
@@ -194,6 +195,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                             data.put("gender", genderText.getText().toString());
                             data.put("latitude", locationText.getText().toString().split(",")[0]);
                             data.put("longitude", locationText.getText().toString().split(",")[1]);
+                            data.put("phone",phoneText.getText().toString());
                             data.put("child_status", childStatus);
 
                             return data;
