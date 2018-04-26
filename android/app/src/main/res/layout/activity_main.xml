@@ -16,11 +16,11 @@
         <ImageView
             android:id="@+id/logo"
             android:layout_width="wrap_content"
-            android:layout_height="192dp"
+            android:layout_height="200dp"
             android:scaleX="0.5"
             android:scaleY="0.5"
             android:src="@drawable/logo"
-            android:tint="@color/colorAccent" />
+            android:tint="@color/blue_grey" />
 
 
         <android.support.design.widget.TextInputEditText

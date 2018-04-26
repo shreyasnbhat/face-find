@@ -30,7 +30,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:padding="8dp"
-        app:srcCompat="@color/cardview_light_background" />
+        />
 
     <Spinner
         android:id="@+id/child_status_match"
@@ -59,34 +59,40 @@
     <EditText
         android:id="@+id/edit_name"
         style="@style/editTextTheme"
-        android:layout_above="@+id/edit_age"
+        android:layout_above="@+id/wrapper_age"
         android:layout_alignParentEnd="true"
         android:hint="Name"
         android:inputType="text"
         android:singleLine="false"
         android:text="" />
 
-    <EditText
-        android:id="@+id/edit_age"
-        style="@style/editTextTheme"
-        android:layout_above="@+id/edit_phone"
-        android:layout_alignStart="@+id/edit_phone"
-        android:layout_marginEnd="200sp"
-        android:hint="Age"
-        android:inputType="number"
-        android:text="" />
-
-    <EditText
-        android:id="@+id/edit_gender"
-        style="@style/editTextTheme"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/edit_phone"
-        android:layout_below="@+id/edit_name"
-        android:layout_marginStart="200sp"
-        android:layout_toLeftOf="@id/edit_age"
-        android:hint="Gender"
-        android:inputType="text"
-        android:text="" />
+        android:layout_above="@id/edit_phone"
+        android:id="@+id/wrapper_age"
+        android:orientation="horizontal"
+        >
+
+        <EditText
+            android:id="@+id/edit_age"
+            style="@style/editTextTheme"
+            android:hint="Age"
+            android:layout_weight="1"
+            android:inputType="number"
+            android:text="" />
+
+        <EditText
+            android:id="@+id/edit_gender"
+            style="@style/editTextTheme"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Gender"
+            android:inputType="text"
+            android:text="" />
+
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/edit_phone"
